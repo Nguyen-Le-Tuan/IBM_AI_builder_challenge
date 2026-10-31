@@ -14,7 +14,8 @@ If not, the pipeline will mostly output Slate ("not found in source"), and we ne
 |---|---|---|---|
 | 1. Seeds | Human | ~30 min / 12 posts | Browse normally, then copy each qualifying post into `data/r1/seeds_<XX>.csv`. |
 | 2. Enrichment | Agent (Claude Code or Codex) | Unattended | Run `prompts/r1_enrichment_agent.md`. The agent writes `r1_<XX>.csv` and `report_<XX>.md`. |
-| 3. Audit | Human | ~15 min | Check the rows marked `audit_selected=yes` and fill in `audit_result`, `audit_notes` and `auditor`. |
+| 3a. Cross-model audit | A **different** model (Claude, strongest available) | Unattended | Run `prompts/r1_crossmodel_audit.md`. It re-judges every row blind, grades the enriching agent, and writes `audit_xm_<XX>.csv` and `.md`. |
+| 3b. Human check | Human | ~5–10 min | Review only the rows marked `escalate=yes` or `spot_check`, then fill `audit_result`, `audit_notes` and `auditor` in `r1_<XX>.csv` for those rows. |
 | 4. Combine | Agent or human | — | Merge the three reports. Record the R1 numbers in `Journal.md` §15 and any decision in §2. |
 
 ### Why step 1 stays human
@@ -23,7 +24,12 @@ Platform terms restrict automated access to Reddit, X and Facebook. Reddit's 202
 
 ### Why step 3 stays human
 
-The agent's output is only trustworthy once someone measures its error rate. A 20% audit gives us that estimate.
+The agent's output is only trustworthy once someone measures its error rate, and an agent cannot audit itself.
+
+- A **different** model re-checks all rows. That gives agreement between two models, not ground truth.
+- A human then decides the disagreements and a few random agreements.
+
+This replaced the original 20% human-only audit on 2026-10-31.
 
 ---
 

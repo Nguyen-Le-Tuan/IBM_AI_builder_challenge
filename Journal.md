@@ -713,3 +713,16 @@ These must be **demonstrated** (§11), not asserted.
 1. Make **post ↔ hop-1** the core comparison. Show hop 2 (study) as a bonus only when reachable.
 2. 6/29 hop-1 pages blocked server-side fetching. Consider fetching hop 1 in the user's browser on click, weighing privacy and terms.
 3. Platform and evaluation-data sourcing must change or be justified after the Reddit policy check (D-006).
+
+### 2026-10-31 — Le Tuan (+ Claude) — R1 audit becomes cross-model + human check
+
+- Le Tuan asked whether Codex could do the audit too.
+  - **Claude's answer:** no. A self-audit is circular.
+  - A **different** model can re-check every row; this yields agreement, not ground truth. Humans then decide only the disagreements plus 3 random agreements.
+- Lok Sang is busy. Truyen Anh (Claude Pro) will run the new prompt `prompts/r1_crossmodel_audit.md` (v1) in Claude Code with the strongest model.
+- **Design of the prompt:**
+  - Phase A is blind: it uses only the post text and link, and must not read Codex's columns, Journal §15, `report_CX.md`, `phase0_summary.md` or `review.py`.
+  - Phase B grades Codex. Access differences are recorded but not counted against Codex.
+  - The prompt escalates rows to a human.
+  - Because `data/r1/cache/` is gitignored, Truyen Anh's run re-fetches pages. Pages may have changed since Codex's fetch.
+- `data/r1/README.md` step 3 and `HUMAN_TODO.md` updated to match.
