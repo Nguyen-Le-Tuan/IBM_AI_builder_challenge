@@ -64,7 +64,9 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | Label system | `RECOMMENDED` (endorsed) | Two layers: span relation colour + claim-level verdict (§5). |
 | Track | `RECOMMENDED` | AI for Good. Not registered yet. |
 | Content class | `RECOMMENDED` | Posts with a link or explicit citation. Text only. |
-| Platform | `RECOMMENDED` | Own fixture feed page + one real platform adapter. Leaning Reddit; its DOM is not yet verified. |
+| Platform | `OPEN` (was `RECOMMENDED`) | Own fixture feed page + one real-platform adapter. The Reddit DOM was checked: `shreddit-post` exposes `content-href`, `post-title`, `created-timestamp` and `permalink`; old Reddit uses different markup. **But** Reddit's primary policy texts conflict with research collection (see the next row), so the real-platform choice is reopened (D-006). |
+| Platform policy | `VERIFIED` 2026-10-31 (Codex T1) | Reddit Responsible Builder Policy: "Any research that uses Reddit data collected outside of the RFR Program is in violation of this policy." Reddit User Agreement: no collecting data "by any means (automated or otherwise)" except as permitted. X ToS prohibits crawling or scraping without written consent. None of these documents addresses a user-click extension reading the page being viewed. See `docs/research/platform_policies.md`. |
+| R1 pilot | `VERIFIED` mechanically; semantics provisional (audit pending) | 29 Reddit seeds (target 36; r/nutrition yielded 1/8). Source passage found within 2 hops: **21/29 (72%)**, almost all at hop 1. Primary reachable: only **5/29**. Hop 1 blocked or paywalled: 7/29. All quotes were re-verified independently by Claude. Details in §15. |
 | Trigger | `RECOMMENDED` | User clicks Check. No automatic feed scanning in the MVP. |
 | Language | `RECOMMENDED` | English (the submission must be in English). |
 | Model training | `RECOMMENDED` | No training or fine-tuning in the MVP. |
@@ -85,7 +87,8 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `DECIDED` |
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
 | D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED`. The "humans capture social posts" clause is superseded by D-005 for Reddit only. |
-| D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `DECIDED` |
+| D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `DECIDED`. Under review in D-006: the run used a signed-in session, and the primary policy conflicts. |
+| D-006 | 2026-10-31 | **To decide:** after the verified Reddit policy conflict, (a) keep, quarantine or delete the 29 Reddit pilot rows; (b) build dev and held-out data from non-Reddit sources (e.g. SPICED, our own fixture posts, a permissive platform); (c) choose the real-platform adapter, if any; (d) whether D-005 stays in force. | Team | `OPEN` |
 
 ---
 
@@ -148,6 +151,10 @@ Scores are never made public.
 - It has per-task [rollback snapshots](https://bob.ibm.com/docs/ide/features/rollback) and supports MCP, rules and skills.
 - It runs on Linux (Debian package listed), Windows and macOS.
 - [Bobalytics](https://bob.ibm.com/docs/ide/features/bobalytics), which reports "Bob factor" (the % of committed lines Bob created), is **Enterprise-only**. On the trial we must keep our own record of Bob's contribution (see §12.3).
+- From Codex T7 (`VERIFIED` 2026-10-31; see `docs/research/ibm_bob.md`):
+  - The trial is 30 days with 50 Bobcoins; usage per action varies.
+  - No full chat or task export was found, and unpinned task history is deleted after 30 days idle. Copy key Bob outputs into `BOB_LOG.md` as you go.
+  - Bob loads a workspace `AGENTS.md` by default, so it will follow our `AGENTS.md` → `CLAUDE.md` rules.
 
 ---
 
@@ -651,3 +658,58 @@ These must be **demonstrated** (§11), not asserted.
   - `AGENTS.md`, so that Codex follows `CLAUDE.md`.
 - **Updated:** `CLAUDE.md` now records the D-005 exception. `.gitignore` adds `data/external/`.
 - **Still human:** the R1 audit, preferably by Lok Sang or Truyen Anh, since Le Tuan ran the agent; account sign-ups; held-out gold labels.
+
+### 2026-10-31 — Le Tuan (+ Codex, reviewed by Claude) — Phase 0 run results
+
+**Run (Codex, `prompts/phase0_codex_agent.md`).**
+- T1, T5 and T7 done; T2, T3, T4 and T6 partial.
+- **Outputs:**
+  - `docs/research/` — `platform_policies.md`, `reddit_dom_check.md`, `datasets.md`, `services.md`, `ibm_bob.md`, `phase0_summary.md`;
+  - `data/r1/` — `seeds_CX.csv`, `seeds_CX_skips.md`, `r1_CX.csv`, `report_CX.md`;
+  - `tools/r1/`.
+- No tracked files were modified and nothing was committed. No accounts were created.
+
+**Deviations, recorded honestly:**
+- Le Tuan explicitly allowed Codex to use the **signed-in** Brave session for T2/T3. D-005 specified logged-out.
+- T4's script continued after bot-check signals on CX-015 and CX-020. It did not solve or retry them, but it missed the stop rule.
+- T6 stopped at an NCBI reCAPTCHA, as required.
+- T3 yielded 29 of 36 seeds: the r/nutrition listing ended at 24 positions with only 1 qualifying post. Codex did not silently fill the gap.
+
+**Claude's independent review:**
+- Re-checked all 29 rows with a separate script:
+  - columns match the template;
+  - seed columns are unchanged;
+  - every `main_claim_quote` is in `post_text`;
+  - every hop-1 and primary quote is a verbatim substring of the cached source;
+  - all quotes are ≤ 40 words.
+  - **0 problems.**
+- No usernames in the seeds.
+- Source-found decisions came from Codex reading the cached pages, hardcoded in `tools/r1/review.py`. They are agent judgments, and the audit is pending.
+
+**R1 numbers (n = 29, provisional):**
+- Source found within 2 hops: 21/29 (72%). This is above the ~50% threshold.
+- Hop 1: open 22, blocked 6, paywalled 1.
+- Primary: open 4, abstract-only 1, not found 24.
+- Linked kind: news 19, press release 5, paper 5.
+- Interpretation: **the post ↔ linked-page comparison is feasible; the article ↔ study hop is rarely reachable automatically.**
+
+**Candidate distortions Claude noticed** (`HYPOTHESIS`, not labels):
+- CX-013 "70% fatality rate" vs "60 to 70 percent historically died" → `quantity_altered` (top of a range presented as the rate).
+- CX-016 / CX-024: the vaccine effect is reported without "along with Keytruda" → `condition_omitted`.
+- CX-018 "breakthrough in Alzheimer's prevention" vs the abstract's "support further studies" → `certainty_strengthened`.
+- CX-027 "shatters ... conjecture" vs "helped researchers extend" → flagged by Codex as the only `distorted` item.
+- Codex left 28/29 impressions as `unsure`.
+- The guideline types do occur in real posts. This motivates, but does not prove, the taxonomy.
+
+**Domain drift:** some seeds are science but not health (CX-003 politics/law, CX-023 ecology, CX-025 engineering, CX-026 wildlife, CX-027 AI/math, CX-028 history of science). Decide whether "scientific" in D-001 includes these.
+
+**Services and datasets** (`VERIFIED` by Codex):
+- watsonx.ai's pricing page advertises a free tier of up to 300,000 tokens/month. An older FAQ says 50,000, so check the real account.
+- Code Engine has a monthly free allowance.
+- Crossref and OpenAlex work without a key, with stated rate limits.
+- SPICED is MIT (6,025 rows, CSV). No licence was found for the Wührl dataset, so do not use it until clarified.
+
+**Design implications to discuss next (Claude):**
+1. Make **post ↔ hop-1** the core comparison. Show hop 2 (study) as a bonus only when reachable.
+2. 6/29 hop-1 pages blocked server-side fetching. Consider fetching hop 1 in the user's browser on click, weighing privacy and terms.
+3. Platform and evaluation-data sourcing must change or be justified after the Reddit policy check (D-006).

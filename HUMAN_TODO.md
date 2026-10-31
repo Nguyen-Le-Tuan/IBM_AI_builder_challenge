@@ -38,18 +38,18 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [ ] | Read Journal.md §0–§12 | LS, TA | |
 | [ ] | Agree on workstream owners (A backend/NLP, B extension/UI, C data/eval/pitch) and weekly hours | ALL | Journal §12.1; record the decision in Journal §2 |
 | [ ] | Agree on an API budget ceiling (even a rough tier) | ALL | Record in Journal §2 |
-| [ ] | **Run the Codex Phase 0 agent** (`prompts/phase0_codex_agent.md`, T1–T8): policies, Reddit DOM, 36 Reddit seeds, enrichment, dataset licences, service limits, Bob details, summary | LT | Launch with `ALLOW_SOCIAL_BROWSING=reddit-logged-out` and `R1_CONTACT_EMAIL`. Commit the current state first so `git diff` shows only Codex's changes |
-| [ ] | Review Codex output (`git diff`, `docs/research/phase0_summary.md`), then commit | LT | Do not commit `data/r1/cache/` or `data/external/` (they are gitignored) |
-| [ ] | Confirm D-005 (Codex browsing public Reddit pages, logged out) | LS, TA | Journal §2 |
+| [x] | **Run the Codex Phase 0 agent** (`prompts/phase0_codex_agent.md`, T1–T8) | LT | Done 2026-10-31. T1/T5/T7 done; T2/T3/T4/T6 partial. Summary in `docs/research/phase0_summary.md`; results in Journal §15 |
+| [~] | Review Codex output, then commit | LT | Claude reviewed it on 2026-10-31 (0 quote problems; deviations logged in Journal §15). Commit pending; never commit `data/r1/cache/` or `data/external/` |
+| [ ] | **Decide D-006**: what to do with the Reddit pilot data, where dev/held-out data comes from, and the real-platform adapter | ALL | Replaces "confirm D-005". Journal §2. First item of the design discussion |
 | [ ] | (Optional) Human seeds from X or Facebook for platform diversity, 6 each → `seeds_LS.csv`, `seeds_TA.csv` | LS, TA | Rules in `data/r1/README.md`. Codex T4, or a re-run of `r1_enrichment_agent.md`, enriches them |
-| [ ] | **R1 step 3:** audit the `audit_selected=yes` rows of `r1_CX.csv` (~15 min) | LS or TA | Not LT, who ran the agent. Fill `audit_result`, `audit_notes`, `auditor` |
+| [ ] | **R1 step 3:** audit the `audit_selected=yes` rows of `r1_CX.csv`: CX-010, CX-014, CX-017, CX-018, CX-019, CX-022 (~15 min) | LS or TA | Not LT, who ran the agent. Fill `audit_result`, `audit_notes`, `auditor`. Open the source links yourself in a normal browser |
 | [ ] | **R1 step 4:** combine the R1 reports (`report_CX.md` plus any human-seed reports), record the numbers in Journal §15 and any decision in §2 | TBD (C), agent can draft | If >20% of audited rows are `wrong`, fix the prompt and re-run before trusting the numbers. Below ~50% source-found → revisit the content class |
 | [ ] | Decide whether to add an automated open-platform sample (e.g. the Bluesky API) | ALL | Optional. Needs a human-created app password. Journal §14 |
 | [~] | Write labeling guideline v0: finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Draft by Claude 2026-10-31 at `docs/labeling_guideline_v0.md` |
 | [ ] | Review guideline v0 and answer its §11 open questions; record agreed changes | ALL | Do this before labeling the dev set |
-| [ ] | Verify the Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | Codex T2 | Output: `docs/research/reddit_dom_check.md` |
-| [ ] | Check the licences of the Wührl et al. dataset and SPICED for evaluation use | Codex T5 | Output: `docs/research/datasets.md` |
-| [ ] | Check free tiers and terms: watsonx.ai (Granite), Code Engine, Crossref / OpenAlex / PubMed | Codex T6 | Output: `docs/research/services.md` |
+| [x] | Verify the Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | Codex T2 | Done; observed while signed in. `docs/research/reddit_dom_check.md` |
+| [~] | Check the licences of the Wührl et al. dataset and SPICED for evaluation use | Codex T5 | SPICED: MIT. Wührl: **no licence found** → a human should email the authors before any use. `docs/research/datasets.md` |
+| [~] | Check free tiers and terms: watsonx.ai (Granite), Code Engine, Crossref / OpenAlex / PubMed | Codex T6 | Partial (NCBI reCAPTCHA). The watsonx free tier conflicts between pages (300k vs 50k tokens/month); verify in a real account. `docs/research/services.md` |
 
 ## Phase 1 — Nov 2–4: Registration
 
