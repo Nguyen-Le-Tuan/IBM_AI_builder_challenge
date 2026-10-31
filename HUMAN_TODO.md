@@ -38,11 +38,13 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [ ] | Read Journal.md §0–§12 | LS, TA | |
 | [ ] | Agree on workstream owners (A backend/NLP, B extension/UI, C data/eval/pitch) and weekly hours | ALL | Journal §12.1; record the decision in Journal §2 |
 | [ ] | Agree on an API budget ceiling (even a rough tier) | ALL | Record in Journal §2 |
-| [ ] | **R1 experiment:** collect 12 posts each (~36 total) that report a science/health finding | ALL | Follow `data/r1/README.md`; copy `data/r1/r1_template.csv` to `data/r1/r1_<initials>.csv`. Journal §7 |
-| [ ] | R1 — Le Tuan's 12 posts (`data/r1/r1_LT.csv`) | LT | |
-| [ ] | R1 — Lok Sang's 12 posts (`data/r1/r1_LS.csv`) | LS | |
-| [ ] | R1 — Truyen Anh's 12 posts (`data/r1/r1_TA.csv`) | TA | |
-| [ ] | Compute the R1 result: % of posts with the source sentence findable within 2 hops | TBD (C) | Below ~50% → revisit the content class |
+| [ ] | **R1 step 1:** capture 12 seed posts by hand into `data/r1/seeds_LT.csv` (~30 min; record total minutes here) | LT | Copy `data/r1/seeds_template.csv`; rules in `data/r1/README.md` |
+| [ ] | R1 step 1: seeds → `data/r1/seeds_LS.csv` | LS | |
+| [ ] | R1 step 1: seeds → `data/r1/seeds_TA.csv` | TA | |
+| [ ] | **R1 step 2:** run the agent with `prompts/r1_enrichment_agent.md` on your own seeds file (set `R1_CONTACT_EMAIL` first) | Each member | Review the output, then commit `r1_<XX>.csv`, `report_<XX>.md` and `tools/r1/` |
+| [ ] | **R1 step 3:** audit the `audit_selected=yes` rows, ideally in another member's file (~15 min) | Each member | Fill `audit_result`, `audit_notes`, `auditor` |
+| [ ] | **R1 step 4:** combine the 3 reports, record the numbers in Journal §15 and any decision in §2 | TBD (C), agent can draft | If >20% of audited rows are `wrong`, fix the prompt and re-run before trusting the numbers. Below ~50% source-found → revisit the content class |
+| [ ] | Decide whether to add an automated open-platform sample (e.g. the Bluesky API) | ALL | Optional. Needs a human-created app password. Journal §14 |
 | [~] | Write labeling guideline v0: finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Draft by Claude 2026-10-31 at `docs/labeling_guideline_v0.md` |
 | [ ] | Review guideline v0 and answer its §11 open questions; record agreed changes | ALL | Do this before labeling the dev set |
 | [ ] | Verify Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | TBD (B) | About 10 minutes. Journal §8 |

@@ -59,6 +59,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 |---|---|---|
 | Team | `DECIDED` 2026-10-31 (Le Tuan) | Le Tuan, Lok Sang, Truyen Anh. Roles are `OPEN` (see §12.1). |
 | MVP domain | `DECIDED` 2026-10-31 (Le Tuan) | Social posts that cite a **scientific/health finding**. Scholarship/job ads move to v2. |
+| Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do platform access, sampling, credentials, audits and held-out gold labels (D-004). |
 | Core framing | `RECOMMENDED` (endorsed) | Claim-to-source **diff**, not truth classification (§5). |
 | Label system | `RECOMMENDED` (endorsed) | Two layers: span relation colour + claim-level verdict (§5). |
 | Track | `RECOMMENDED` | AI for Good. Not registered yet. |
@@ -83,6 +84,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-001 | 2026-10-31 | MVP domain = scientific/health findings cited in social posts | Le Tuan | `DECIDED` |
 | D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `DECIDED` |
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
+| D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED` |
 
 ---
 
@@ -258,7 +260,11 @@ If a post has no link, or the link is paywalled, everything falls back to Slate.
   - whether it links onward to a primary source (DOI or press release).
 - **Metric:** the % of posts where a human can find the source sentence within 2 hops.
 - **Threshold** (judgment, not a standard): below ~50%, change the content class or add a search fallback.
-- **Protocol and template:** [`data/r1/README.md`](data/r1/README.md) and `data/r1/r1_template.csv`, one CSV per member.
+- **Protocol v1 (hybrid, D-004):**
+  - Humans capture ~12 seed posts each, about 30 minutes, by hand.
+  - An agent runs [`prompts/r1_enrichment_agent.md`](prompts/r1_enrichment_agent.md) to follow links, fetch metadata, extract and mechanically verify quotes, and compute metrics.
+  - Humans audit a 20% sample.
+  - Details: [`data/r1/README.md`](data/r1/README.md).
 
 **R2 — Is the span-level diff accurate, and does it avoid false alarms?**
 - **Experiment:** 20 hand-labeled (post, source passage) dev pairs, including **6–8 faithful paraphrases** as hard negatives. Run one prompt with structured output.
@@ -296,6 +302,10 @@ Feeds re-render, "See more" expands text, and the DOM nests deeply.
 - **(a) Our own fixture feed page.** Social-feed look, no Facebook branding. Posts are written by us from real distortion patterns and link to real open-access sources. It serves as the dev environment, the regression tests and the video's opening scene. The video must say clearly that it is a test page.
 - **(b) One real-platform adapter.** Leaning Reddit: viewable without login, and link posts carry the source URL. Our belief that `shreddit-post` exposes attributes like `content-href` is **unverified**; check it in DevTools.
 - Both share one `PlatformAdapter` interface.
+- **Data-access constraint** (reported, `HYPOTHESIS` until checked against Reddit's own pages): Reddit's Responsible Builder Policy (announced on r/redditdev, Nov 2025) requires approval for Data API access and names AI agents.
+  - Datasets therefore come from human-captured posts, not API or agent scraping.
+  - The extension reads the DOM of a page the user is viewing, on user click. It does not use the Data API.
+  - Whether the policy affects such extensions is `OPEN`.
 
 **Out of MVP scope:**
 - automatic feed checking;
@@ -468,6 +478,13 @@ Everyone labels data; that is required for double annotation.
 - The rules require the prototype to be "developed primarily using IBM Bob". **Product code should be written primarily with Bob.**
 - Claude sessions are for planning, research, documentation and review, unless the team decides otherwise.
 - Any product code written outside Bob must be noted honestly in `BOB_LOG.md`.
+- **Data tooling is not product code.** Scripts in `tools/` that agents write for data collection and evaluation are not part of the product (D-004). Keep them out of `backend/` and `extension/`.
+- **Agent prompts** live in `prompts/` and are versioned like code. A good prompt states:
+  - goal, inputs and outputs;
+  - hard rules;
+  - stop conditions;
+  - a mechanical verification step;
+  - a human audit sample.
 
 ### 12.3 Recording Bob's contribution
 
@@ -546,6 +563,8 @@ These must be **demonstrated** (§11), not asserted.
 - Eligibility answer from BeMyApp, for each member.
 - Deployment host.
 - Is work done before Nov 2 (manual dataset, documents) acceptable? We believe yes since it is not code, but it is not addressed in the rules. We may ask the organizers.
+- Should we add a fully automated sample from an open platform (e.g. the Bluesky API)? It needs a human-created app password, and it measures a different platform than our demo.
+- Does Reddit's Responsible Builder Policy affect browser extensions that read pages the user is viewing? Check Reddit's own pages.
 
 ---
 
@@ -595,3 +614,19 @@ These must be **demonstrated** (§11), not asserted.
   - `date_omitted` was replaced by `superseded_presented_as_current`. It is limited to evidence already in our sources.
   - Lavender-only claims can still be `supported`.
 - **Open for team review:** see guideline §11.
+
+### 2026-10-31 — Le Tuan, Lok Sang, Truyen Anh (+ Claude) — Automate data work with agents (D-004)
+
+- **Team principle:** humans do only what needs a human; automatable work goes to coding agents with detailed prompts.
+- **Claude's caveats, accepted into D-004:**
+  - Social platforms restrict automated access, so seed capture stays human. Reddit's 2025 Responsible Builder Policy reportedly names AI agents; this is from secondary sources and not verified.
+  - Agent output needs a measured error rate, hence a 20% human audit.
+  - Held-out gold labels must be human and independent of model output. Otherwise the evaluation only measures agreement between models.
+- **Created:**
+  - `prompts/r1_enrichment_agent.md` (v1). Hard rules: no social platforms, no fabrication, mechanical quote verification, robots.txt and rate limits, no paywall circumvention, no commits. It also defines a deterministic audit sample and a report.
+  - `data/r1/seeds_template.csv`.
+- **Rewritten:**
+  - `data/r1/README.md` as protocol v1.
+  - `data/r1/r1_template.csv` with seed + enrichment + audit columns.
+- **`.gitignore`:** `data/r1/cache/` (fetched third-party text) and `.venv-tools/`.
+- **Rule:** prompts live in `prompts/`; data tooling in `tools/` is not product code (§12.2).

@@ -1,125 +1,161 @@
-# R1 — Source-acquisition experiment (manual, no code)
+# R1 — Source-acquisition experiment
 
-**Question.** For real social posts that report a scientific or health finding, can a human find the source sentence behind the post within **2 hops**? The hops are post → linked page → primary study.
+**Question.** For real social posts that report a scientific or health finding, can we find the source sentence behind the post within **2 hops**? The two hops are the page the post links to (hop 1) and the study it relies on (primary).
 
 If not, the pipeline will mostly output Slate ("not found in source"), and we need to change the content class or add a search fallback. See `Journal.md` §7.
 
-**Status:** protocol v0, drafted 2026-10-31. Allowed before kickoff because it is manual data collection, not code.
+**Status:** protocol v1, 2026-10-31. Under D-004, humans do only what needs a human; an agent does the rest.
 
 ---
 
-## Who collects what
+## Workflow
 
-- Each member collects **12 posts**, so ~36 in total.
-- Each member works in their **own file** to avoid merge conflicts:
-  - `data/r1/r1_LT.csv` (Le Tuan)
-  - `data/r1/r1_LS.csv` (Lok Sang)
-  - `data/r1/r1_TA.csv` (Truyen Anh)
-- To start, copy `r1_template.csv` and rename it. You can edit it in Google Sheets or Excel, but export as **CSV (UTF-8)**.
-- **Time box:** about 2–3 hours per person. If a post takes more than 15 minutes, stop, record what you found, and move on. The time spent is data too.
+| Step | Who | Time | What |
+|---|---|---|---|
+| 1. Seeds | Human | ~30 min / 12 posts | Browse normally, then copy each qualifying post into `data/r1/seeds_<XX>.csv`. |
+| 2. Enrichment | Agent (Claude Code or Codex) | Unattended | Run `prompts/r1_enrichment_agent.md`. The agent writes `r1_<XX>.csv` and `report_<XX>.md`. |
+| 3. Audit | Human | ~15 min | Check the rows marked `audit_selected=yes` and fill in `audit_result`, `audit_notes` and `auditor`. |
+| 4. Combine | Agent or human | — | Merge the three reports. Record the R1 numbers in `Journal.md` §15 and any decision in §2. |
 
-## What counts as a post
+### Why step 1 stays human
 
-**Include** a post if it:
-- reports a scientific, medical, health or nutrition **finding** ("study finds…", "researchers discovered…", "X linked to Y");
-- is in English;
-- has its key claim in text: the post body or a link-post title.
+Platform terms restrict automated access to Reddit, X and Facebook. Reddit's 2025 Responsible Builder Policy reportedly names AI agents explicitly; this comes from secondary sources and has not been verified against Reddit's own pages. A person reading posts in a browser and copying them by hand is ordinary use. The agent never touches a social platform.
 
-Posts **with no link** are allowed if they name a source ("a Harvard study…"). Record `has_link = no`; those show how often our link-following approach fails.
+### Why step 3 stays human
+
+The agent's output is only trustworthy once someone measures its error rate. A 20% audit gives us that estimate.
+
+---
+
+## Step 1 — capturing seeds (human)
+
+Each member captures **12 posts** into their own file, which avoids merge conflicts:
+
+- `data/r1/seeds_LT.csv`
+- `data/r1/seeds_LS.csv`
+- `data/r1/seeds_TA.csv`
+
+Copy `seeds_template.csv` to start. You can edit in Google Sheets or Excel, but export as **CSV (UTF-8)**. Record your total capture time in your `HUMAN_TODO.md` row.
+
+### What counts as a post
+
+**Include** a post if:
+
+- it reports a scientific, medical, health or nutrition **finding** ("study finds…", "researchers discovered…", "X linked to Y");
+- it is in English;
+- the key claim is in text (post body or link-post title).
+
+A post **without a link** is fine if it names a source ("a Harvard study…"). These posts show how often link-following fails.
 
 **Exclude:**
-- posts whose key claim exists only in an image or video (count them in your notes, but don't fill a row);
+
+- posts whose key claim exists only in an image or video (count them in `seed_notes` of your next row);
 - pure opinion, jokes, questions and ads;
-- comments (top-level posts only).
+- comments (use top-level posts only).
 
-## Sampling rules (to avoid cherry-picking)
+### Sampling rules (avoid cherry-picking)
 
-We need **both faithful and distorted** posts. A dataset of only juicy distortions would make our false-alarm rate impossible to measure.
+We need **both faithful and distorted** posts. Otherwise false alarms are impossible to measure.
 
-1. Pick a venue and a listing first, e.g. "r/science, Top, This Week" or "X search: `study finds`, Latest".
+1. Pick a venue and a listing first, for example "r/science, Top, This Week" or "X search `study finds`, Latest".
 2. Take qualifying posts **in the order they appear**. Don't skip a post because it looks boring or accurate.
 3. Record the venue and listing in `how_found`.
-4. Across the team, aim for roughly:
-   - **~1/3 from strict-title venues**, e.g. r/science, which requires titles that reflect the source; likely faithful, and good hard negatives;
-   - **~2/3 from general venues**, e.g. r/Health, r/nutrition, r/Futurology, r/EverythingScience, X, public Facebook pages, Threads.
+4. Across the team, aim for:
+   - **~1/3 from strict-title venues** such as r/science (likely faithful; good hard negatives);
+   - **~2/3 from general venues**: r/Health, r/nutrition, r/Futurology, r/EverythingScience, X, public Facebook pages, Threads.
 5. Cover at least 2 platforms across the team.
 
-## Privacy and IP rules
+### Privacy and IP
 
-- **Collect by hand only.** No scraping scripts or browser automation: it is too early for code, and platform terms apply.
-- **Do not record usernames or profile links.** `post_url` is enough.
-- These real posts are for **internal research only**. Never show them in the demo video, slides or project page; the demo uses our own fixture posts (rules §10, `Journal.md` §3).
-- Quotes from sources should stay short, ≤ 40 words.
+- Capture seeds by hand. No scraping scripts and no browser automation on social platforms.
+- Do not record usernames or profile links; `post_url` is enough.
+- These real posts are for **internal research only**. Never show them in the demo video, slides or project page. The demo uses our own fixture posts (rules §10, `Journal.md` §3).
+- Fetched article and paper texts stay in `data/r1/cache/`, which is gitignored. Never commit them.
 
 ---
 
 ## Column dictionary
 
-| Column | Allowed values / format | How to fill |
+### Seed columns (human, step 1)
+
+| Column | Format | Notes |
 |---|---|---|
-| `item_id` | `LT-001`, `LS-001`, `TA-001`… | Your initials + a running number. |
+| `item_id` | `LT-001`, `LS-001`, `TA-001`… | Your initials + a running number |
 | `collector` | `LT` / `LS` / `TA` | |
-| `collected_at` | `YYYY-MM-DD` | The date you recorded the row. |
+| `collected_at` | `YYYY-MM-DD` | |
 | `platform` | `reddit` / `x` / `facebook` / `threads` / `other` | |
-| `how_found` | free text | Venue + listing, e.g. `r/science top week`. |
-| `post_url` | URL | Permalink to the post. |
-| `post_date` | `YYYY-MM-DD` or empty | If visible. |
-| `post_text` | text | Copy the visible post text **verbatim**: title + body, expanded ("See more"). Remove line breaks if your editor struggles; otherwise keep them. |
-| `claim_in_image` | `yes` / `no` | `yes` if important parts of the claim are only in an image. |
-| `has_link` | `yes` / `no` | Does the post link to a source? |
-| `linked_url` | URL or empty | The first source link in the post (hop 1). |
-| `linked_kind` | `news_article` / `press_release` / `paper` / `abstract` / `preprint` / `video` / `social_post` / `other` | Type of the hop-1 page. |
-| `hop1_access` | `open` / `paywalled` / `broken` / `blocked` / `n/a` | Could you read the page? |
-| `hop1_contains_finding` | `yes` / `partial` / `no` / `n/a` | Does hop 1 contain the finding the post states? |
-| `hop1_finding_quote` | ≤ 40 words, verbatim | The hop-1 sentence closest to the post's claim. |
-| `primary_url` | URL or empty | The study, preprint, dataset or press release that hop 1 relies on. |
-| `primary_link_basis` | `hyperlink` / `doi` / `named_only` / `none` | How hop 1 points to it: a clickable link, a DOI, only a name ("published in JAMA"), or nothing. |
-| `primary_access` | `open` / `abstract_only` / `paywalled` / `not_found` / `n/a` | What you could read of the primary source. |
-| `primary_date` | `YYYY-MM-DD` or `YYYY` | Publication date of the primary source. |
-| `primary_finding_quote` | ≤ 40 words, verbatim | The primary sentence closest to the post's claim, usually from the abstract. |
-| `source_found_within_2_hops` | `yes` / `no` | **The R1 metric.** `yes` if you found a sentence in hop 1 or the primary source that the post's claim can be compared against. |
-| `initial_impression` | `faithful` / `distorted` / `unsure` | Your quick judgment **before** careful labeling. It is not a label. |
-| `distortion_notes` | free text | Short notes using guideline type names where possible, e.g. `causality_strengthened (linked→prevents); population_omitted (mice)`. See `docs/labeling_guideline_v0.md`. |
-| `minutes_spent` | integer | Rough minutes for this row. |
-| `notes` | free text | Anything odd: retraction notice, multiple studies, etc. |
+| `how_found` | free text | Venue + listing, e.g. `r/science top week` |
+| `post_url` | URL | Permalink to the post |
+| `post_date` | `YYYY-MM-DD` or empty | If visible |
+| `post_text` | text | Visible text **verbatim**: title + expanded body |
+| `linked_url` | URL or empty | The source link in the post. Copy the real destination if the platform shows a shortlink. |
+| `claim_in_image` | `yes` / `no` | `yes` if important parts of the claim are only in an image |
+| `human_impression` | `faithful` / `distorted` / `unsure` / empty | Optional quick gut call. **Not a label.** |
+| `seed_notes` | free text | Optional |
 
-### Filled example — `MOCK` (fictional, do not copy into data files)
+### Enrichment columns (agent, step 2)
 
-| Column | Example value |
+| Column | Allowed values |
 |---|---|
-| `item_id` | `LT-000` |
-| `platform` | `reddit` |
-| `how_found` | `r/Health new` |
-| `post_text` | `Coffee prevents Alzheimer's, new study shows` |
-| `has_link` | `yes` |
-| `linked_url` | `https://news.example/coffee-study` |
-| `linked_kind` | `news_article` |
-| `hop1_access` | `open` |
-| `hop1_contains_finding` | `partial` |
-| `hop1_finding_quote` | `Coffee drinkers had a lower rate of Alzheimer's-like changes, researchers said.` |
-| `primary_url` | `https://journal.example/abs/123` |
-| `primary_link_basis` | `hyperlink` |
-| `primary_access` | `abstract_only` |
-| `primary_date` | `2026-10-29` |
-| `primary_finding_quote` | `Caffeine intake was associated with a lower incidence of amyloid pathology in aged mice.` |
-| `source_found_within_2_hops` | `yes` |
-| `initial_impression` | `distorted` |
-| `distortion_notes` | `causality_strengthened (associated→prevents); population_omitted (mice)` |
+| `main_claim_quote` | Verbatim span of `post_text` |
+| `has_link` | `yes` / `no` |
+| `linked_final_url` | URL after redirects |
+| `linked_kind` | `news_article` / `press_release` / `paper` / `abstract` / `preprint` / `video` / `social_post` / `other` |
+| `hop1_http_status` | Integer or empty |
+| `hop1_access` | `open` / `paywalled` / `broken` / `blocked` / `n/a` |
+| `hop1_contains_finding` | `yes` / `partial` / `no` / `n/a` |
+| `hop1_finding_quote` | ≤ 40 words, verbatim |
+| `hop1_quote_verified` | `true` / `false` / empty |
+| `primary_url` | URL |
+| `primary_doi` | DOI or empty |
+| `primary_link_basis` | `hyperlink` / `doi` / `named_only` / `none` |
+| `primary_resolved_via` | `crossref_search` or empty |
+| `primary_access` | `open` / `abstract_only` / `paywalled` / `not_found` / `n/a` |
+| `primary_text_origin` | `fulltext_html` / `abstract_crossref` / `abstract_pubmed` / `abstract_openalex_reconstructed` / `abstract_landing_page` / `press_release` / empty |
+| `primary_date` | `YYYY-MM-DD`, `YYYY-MM` or `YYYY` |
+| `primary_date_type` | `online` / `print` / `issued` |
+| `primary_finding_quote` | ≤ 40 words, verbatim |
+| `primary_quote_verified` | `true` / `false` / empty |
+| `source_found_within_2_hops` | `yes` / `no` — **the R1 metric** |
+| `relevance_confidence` | `high` / `low` |
+| `model_impression` | `faithful` / `distorted` / `unsure` — **model output, not a label** |
+| `model_candidate_types` | Guideline §5 type names, separated by `;` |
+| `model_notes` | ≤ 2 neutral sentences |
+| `agent_name` | e.g. `claude-code/claude-opus-5-5`, `codex/<model>` |
+| `agent_run_at` | ISO 8601 UTC |
+| `agent_seconds` | Number |
+| `row_status` | `ok` / `partial` / `seed_invalid` / `error` |
+| `verification` | `pass` / `fail:<reasons>` |
+
+### Audit columns (human, step 3)
+
+| Column | Values |
+|---|---|
+| `audit_selected` | `yes` / `no` (set by the agent) |
+| `audit_result` | `correct` / `partly` / `wrong` |
+| `audit_notes` | What was wrong: wrong source, a quote that doesn't support the finding, wrong access class, … |
+| `auditor` | Initials. Ideally audit someone else's file. |
 
 ---
 
-## Computing the result (after all three files are in)
-
-Report these numbers in `Journal.md` §15 with **n** stated:
+## Metrics (report with n)
 
 1. **R1 metric:** % of rows with `source_found_within_2_hops = yes`.
-   - **Decision threshold** (judgment, not a standard): below ~50%, revisit the content class or plan a search fallback. Record the decision in Journal §2.
+   - **Decision threshold** (a judgment, not a standard): below ~50%, revisit the content class or plan a search fallback. Record the decision in Journal §2.
 2. % of rows with `has_link = yes`.
-3. Of the posts with links: % where hop 1 is `paywalled` / `broken` / `blocked`.
-4. % with `primary_link_basis` = `hyperlink` or `doi`. This tells us whether hop 2 can be automated.
+3. Among posts with links: % of hop-1 pages that are `paywalled`, `broken` or `blocked`.
+4. % with `primary_link_basis` = `hyperlink` or `doi` (can hop 2 be automated?).
 5. % with `primary_access` = `open` or `abstract_only`.
-6. Distribution of `initial_impression`. This gives a rough faithful-vs-distorted mix, but it is not a label.
-7. Median `minutes_spent`. This lets us estimate the cost of building the dev and held-out sets.
-8. Count of posts skipped because the claim was only in an image or video. This sizes the text-only limitation.
+6. `human_impression` distribution and `model_impression` distribution, reported **separately**.
+7. Human seed time (from `HUMAN_TODO.md`) and median `agent_seconds`.
+8. Count of posts excluded because the claim was only in an image or video.
+9. **Agent audit:** % `correct` / `partly` / `wrong` among audited rows. **If more than ~20% are `wrong`, do not trust metrics 1–5.** Fix the prompt and re-run.
 
-The R1 posts can seed the dev and held-out sets later. Decide the split **before** any prompt tuning, and keep held-out items out of prompt development.
+---
+
+## Later use of these posts
+
+R1 posts can seed the dev and held-out sets, but labels follow D-004:
+
+- **Dev set:** may be pre-annotated by an agent, then corrected by a human.
+- **Held-out set:** must be labeled by humans independently, **without seeing any model output**. Otherwise the evaluation only measures agreement between models.

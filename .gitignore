@@ -218,3 +218,7 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# R1 data collection: fetched third-party texts stay local; tooling venv
+data/r1/cache/
+.venv-tools/
