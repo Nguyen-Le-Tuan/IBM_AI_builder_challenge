@@ -29,7 +29,7 @@ This file tracks what the team still has to do. The reasoning behind each task l
 
 | Status | Task | Owner | Notes |
 |---|---|---|---|
-| [ ] | Complete the SkillsBuild course "How IBM Bob and AI Tools Are Changing the Way Solutions Are Built" and download the certificate | LT | Required for submission |
+| [~] | Complete the SkillsBuild course "How IBM Bob and AI Tools Are Changing the Way Solutions Are Built" and download the certificate | LT | Required for submission. Course completed 2026-10-31 (LT confirmed); certificate PDF download not yet confirmed |
 | [ ] | Same course and certificate | LS | |
 | [ ] | Same course and certificate | TA | |
 | [ ] | Send the eligibility email to BeMyApp; save the reply | LT | Draft in the chat of 2026-10-31 |
@@ -38,9 +38,13 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [ ] | Read Journal.md §0–§12 | LS, TA | |
 | [ ] | Agree on workstream owners (A backend/NLP, B extension/UI, C data/eval/pitch) and weekly hours | ALL | Journal §12.1; record the decision in Journal §2 |
 | [ ] | Agree on an API budget ceiling (even a rough tier) | ALL | Record in Journal §2 |
-| [ ] | **R1 experiment:** collect ~36 posts that cite a science/health finding, 12 per member, into a shared spreadsheet | ALL | Columns: post text, platform, post URL, linked URL, reachable/paywalled?, finding sentence found?, link to primary source (DOI/press release)?, distortion noted. Journal §7 |
+| [ ] | **R1 experiment:** collect 12 posts each (~36 total) that report a science/health finding | ALL | Follow `data/r1/README.md`; copy `data/r1/r1_template.csv` to `data/r1/r1_<initials>.csv`. Journal §7 |
+| [ ] | R1 — Le Tuan's 12 posts (`data/r1/r1_LT.csv`) | LT | |
+| [ ] | R1 — Lok Sang's 12 posts (`data/r1/r1_LS.csv`) | LS | |
+| [ ] | R1 — Truyen Anh's 12 posts (`data/r1/r1_TA.csv`) | TA | |
 | [ ] | Compute the R1 result: % of posts with the source sentence findable within 2 hops | TBD (C) | Below ~50% → revisit the content class |
-| [ ] | Write labeling guideline v0 (1–2 pages): finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Journal §5 |
+| [~] | Write labeling guideline v0: finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Draft by Claude 2026-10-31 at `docs/labeling_guideline_v0.md` |
+| [ ] | Review guideline v0 and answer its §11 open questions; record agreed changes | ALL | Do this before labeling the dev set |
 | [ ] | Verify Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | TBD (B) | About 10 minutes. Journal §8 |
 | [ ] | Check the licences of the Wührl et al. dataset and SPICED for evaluation use | TBD (C) | Journal §8 |
 | [ ] | Check free tiers and terms: watsonx.ai (Granite), Crossref / OpenAlex / PubMed API rate limits | TBD (A) | Journal §9 |

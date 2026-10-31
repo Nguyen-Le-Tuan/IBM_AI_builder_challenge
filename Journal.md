@@ -197,9 +197,11 @@ The output is a **pair of quotations side by side** plus a difference type, for 
 |---|---|---|---|
 | Mint | Matches source | The source says the equivalent | — |
 | Amber | Changed from source | The source differs in degree, scope or conditions | `scope_broadened`, `certainty_strengthened`, `causality_strengthened`, `condition_omitted`, `population_omitted`, `quantity_altered` |
-| Coral | Contradicts source | The source **explicitly** states something incompatible | different number, explicit negation, different date |
-| Lavender | Time mismatch | A source date makes the "current" framing wrong | `stale_presented_as_new`, `date_omitted` |
+| Coral | Contradicts source | The source **explicitly** states something incompatible | `quantity_contradicted`, `population_contradicted`, `direction_contradicted`, `fact_contradicted` |
+| Lavender | Time mismatch | A source date makes the "current" framing wrong | `stale_presented_as_new`, `superseded_presented_as_current` |
 | Slate | Not found in source | Not in the source, or the source is inaccessible | no judgment made |
+
+The full v0 type list (6 Amber, 4 Coral, 2 Lavender, 2 Slate), verdict rules, span rules and edge cases are in [`docs/labeling_guideline_v0.md`](docs/labeling_guideline_v0.md) (`RECOMMENDED`, awaiting team review).
 
 **Layer 2 — claim verdict.** Shown in the card: `supported`, `contradicted`, `not_established` or `conflicting`. It always states which source(s) it is relative to.
 
@@ -256,6 +258,7 @@ If a post has no link, or the link is paywalled, everything falls back to Slate.
   - whether it links onward to a primary source (DOI or press release).
 - **Metric:** the % of posts where a human can find the source sentence within 2 hops.
 - **Threshold** (judgment, not a standard): below ~50%, change the content class or add a search fallback.
+- **Protocol and template:** [`data/r1/README.md`](data/r1/README.md) and `data/r1/r1_template.csv`, one CSV per member.
 
 **R2 — Is the span-level diff accurate, and does it avoid false alarms?**
 - **Experiment:** 20 hand-labeled (post, source passage) dev pairs, including **6–8 faithful paraphrases** as hard negatives. Run one prompt with structured output.
@@ -571,3 +574,24 @@ These must be **demonstrated** (§11), not asserted.
 - **Created:** `Journal.md`, `HUMAN_TODO.md`, and `CLAUDE.md` (instructions for every member's Claude).
 - **Plan updates for a 3-person team:** double annotation with adjudication, blind baseline scoring, three workstreams (§12.1).
 - **Eligibility:** email to BeMyApp drafted for Le Tuan to send. An F-1 question to UB ISSS is deferred.
+
+### 2026-10-31 — Le Tuan (+ Claude) — R1 protocol and labeling guideline v0
+
+- Le Tuan completed the SkillsBuild course. Certificate download not yet confirmed.
+- **Created** `data/r1/README.md` and `data/r1/r1_template.csv`:
+  - manual collection, 12 posts per member, one CSV per member;
+  - sampling rules that take posts in listing order (to avoid cherry-picking) and keep ~1/3 from strict-title venues as hard negatives;
+  - privacy and IP rules;
+  - the column dictionary and how to compute the R1 metric.
+- **Created** `docs/labeling_guideline_v0.md` (`RECOMMENDED`, not yet reviewed by the team):
+  - 14 finding types across Amber, Coral, Lavender and Slate;
+  - claim-verdict rules and span rules;
+  - 14 edge cases;
+  - an annotation JSON record aligned with §10;
+  - the double-annotation process.
+- **Changes vs §5:**
+  - Added Coral types `quantity_contradicted`, `population_contradicted`, `direction_contradicted`, `fact_contradicted`.
+  - `quantity_altered` now covers reframing only (max→typical, relative→absolute, subgroup→overall).
+  - `date_omitted` was replaced by `superseded_presented_as_current`. It is limited to evidence already in our sources.
+  - Lavender-only claims can still be `supported`.
+- **Open for team review:** see guideline §11.
