@@ -38,18 +38,18 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [ ] | Read Journal.md §0–§12 | LS, TA | |
 | [ ] | Agree on workstream owners (A backend/NLP, B extension/UI, C data/eval/pitch) and weekly hours | ALL | Journal §12.1; record the decision in Journal §2 |
 | [ ] | Agree on an API budget ceiling (even a rough tier) | ALL | Record in Journal §2 |
-| [ ] | **R1 step 1:** capture 12 seed posts by hand into `data/r1/seeds_LT.csv` (~30 min; record total minutes here) | LT | Copy `data/r1/seeds_template.csv`; rules in `data/r1/README.md` |
-| [ ] | R1 step 1: seeds → `data/r1/seeds_LS.csv` | LS | |
-| [ ] | R1 step 1: seeds → `data/r1/seeds_TA.csv` | TA | |
-| [ ] | **R1 step 2:** run the agent with `prompts/r1_enrichment_agent.md` on your own seeds file (set `R1_CONTACT_EMAIL` first) | Each member | Review the output, then commit `r1_<XX>.csv`, `report_<XX>.md` and `tools/r1/` |
-| [ ] | **R1 step 3:** audit the `audit_selected=yes` rows, ideally in another member's file (~15 min) | Each member | Fill `audit_result`, `audit_notes`, `auditor` |
-| [ ] | **R1 step 4:** combine the 3 reports, record the numbers in Journal §15 and any decision in §2 | TBD (C), agent can draft | If >20% of audited rows are `wrong`, fix the prompt and re-run before trusting the numbers. Below ~50% source-found → revisit the content class |
+| [ ] | **Run the Codex Phase 0 agent** (`prompts/phase0_codex_agent.md`, T1–T8): policies, Reddit DOM, 36 Reddit seeds, enrichment, dataset licences, service limits, Bob details, summary | LT | Launch with `ALLOW_SOCIAL_BROWSING=reddit-logged-out` and `R1_CONTACT_EMAIL`. Commit the current state first so `git diff` shows only Codex's changes |
+| [ ] | Review Codex output (`git diff`, `docs/research/phase0_summary.md`), then commit | LT | Do not commit `data/r1/cache/` or `data/external/` (they are gitignored) |
+| [ ] | Confirm D-005 (Codex browsing public Reddit pages, logged out) | LS, TA | Journal §2 |
+| [ ] | (Optional) Human seeds from X or Facebook for platform diversity, 6 each → `seeds_LS.csv`, `seeds_TA.csv` | LS, TA | Rules in `data/r1/README.md`. Codex T4, or a re-run of `r1_enrichment_agent.md`, enriches them |
+| [ ] | **R1 step 3:** audit the `audit_selected=yes` rows of `r1_CX.csv` (~15 min) | LS or TA | Not LT, who ran the agent. Fill `audit_result`, `audit_notes`, `auditor` |
+| [ ] | **R1 step 4:** combine the R1 reports (`report_CX.md` plus any human-seed reports), record the numbers in Journal §15 and any decision in §2 | TBD (C), agent can draft | If >20% of audited rows are `wrong`, fix the prompt and re-run before trusting the numbers. Below ~50% source-found → revisit the content class |
 | [ ] | Decide whether to add an automated open-platform sample (e.g. the Bluesky API) | ALL | Optional. Needs a human-created app password. Journal §14 |
 | [~] | Write labeling guideline v0: finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Draft by Claude 2026-10-31 at `docs/labeling_guideline_v0.md` |
 | [ ] | Review guideline v0 and answer its §11 open questions; record agreed changes | ALL | Do this before labeling the dev set |
-| [ ] | Verify Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | TBD (B) | About 10 minutes. Journal §8 |
-| [ ] | Check the licences of the Wührl et al. dataset and SPICED for evaluation use | TBD (C) | Journal §8 |
-| [ ] | Check free tiers and terms: watsonx.ai (Granite), Crossref / OpenAlex / PubMed API rate limits | TBD (A) | Journal §9 |
+| [ ] | Verify the Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | Codex T2 | Output: `docs/research/reddit_dom_check.md` |
+| [ ] | Check the licences of the Wührl et al. dataset and SPICED for evaluation use | Codex T5 | Output: `docs/research/datasets.md` |
+| [ ] | Check free tiers and terms: watsonx.ai (Granite), Code Engine, Crossref / OpenAlex / PubMed | Codex T6 | Output: `docs/research/services.md` |
 
 ## Phase 1 — Nov 2–4: Registration
 

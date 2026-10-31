@@ -27,6 +27,11 @@ The agent's output is only trustworthy once someone measures its error rate. A 2
 
 ---
 
+> **Update (D-005, 2026-10-31):**
+> - Codex with computer use may do step 1 for Reddit. It browses logged out and read only, using a fixed sampling frame, via `prompts/phase0_codex_agent.md` (T3). The output is `seeds_CX.csv` with `collector=CX`.
+> - Human capture below remains the method for other platforms, and the fallback if Codex is blocked.
+> - "Why step 1 stays human" above therefore applies to API access and to other platforms. For Reddit browsing, the team accepted the terms risk; see Journal D-005.
+
 ## Step 1 — capturing seeds (human)
 
 Each member captures **12 posts** into their own file, which avoids merge conflicts:

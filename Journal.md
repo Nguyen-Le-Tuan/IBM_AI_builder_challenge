@@ -59,7 +59,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 |---|---|---|
 | Team | `DECIDED` 2026-10-31 (Le Tuan) | Le Tuan, Lok Sang, Truyen Anh. Roles are `OPEN` (see §12.1). |
 | MVP domain | `DECIDED` 2026-10-31 (Le Tuan) | Social posts that cite a **scientific/health finding**. Scholarship/job ads move to v2. |
-| Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do platform access, sampling, credentials, audits and held-out gold labels (D-004). |
+| Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do sampling decisions, credentials, audits and held-out gold labels (D-004). Exception D-005: Codex with computer use may capture R1 seeds from public Reddit pages (logged out, read only). |
 | Core framing | `RECOMMENDED` (endorsed) | Claim-to-source **diff**, not truth classification (§5). |
 | Label system | `RECOMMENDED` (endorsed) | Two layers: span relation colour + claim-level verdict (§5). |
 | Track | `RECOMMENDED` | AI for Good. Not registered yet. |
@@ -84,7 +84,8 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-001 | 2026-10-31 | MVP domain = scientific/health findings cited in social posts | Le Tuan | `DECIDED` |
 | D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `DECIDED` |
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
-| D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED` |
+| D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED`. The "humans capture social posts" clause is superseded by D-005 for Reddit only. |
+| D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `DECIDED` |
 
 ---
 
@@ -265,6 +266,7 @@ If a post has no link, or the link is paywalled, everything falls back to Slate.
   - An agent runs [`prompts/r1_enrichment_agent.md`](prompts/r1_enrichment_agent.md) to follow links, fetch metadata, extract and mechanically verify quotes, and compute metrics.
   - Humans audit a 20% sample.
   - Details: [`data/r1/README.md`](data/r1/README.md).
+- **Update (D-005):** Codex captures 36 Reddit seeds itself (`seeds_CX.csv`), using the fixed frame in [`prompts/phase0_codex_agent.md`](prompts/phase0_codex_agent.md) T3. That makes the R1 sample Reddit-only and logged-out. Human seeds from X or Facebook stay optional, for platform diversity.
 
 **R2 — Is the span-level diff accurate, and does it avoid false alarms?**
 - **Experiment:** 20 hand-labeled (post, source passage) dev pairs, including **6–8 faithful paraphrases** as hard negatives. Run one prompt with structured output.
@@ -630,3 +632,22 @@ These must be **demonstrated** (§11), not asserted.
   - `data/r1/r1_template.csv` with seed + enrichment + audit columns.
 - **`.gitignore`:** `data/r1/cache/` (fetched third-party text) and `.venv-tools/`.
 - **Rule:** prompts live in `prompts/`; data tooling in `tools/` is not product code (§12.2).
+
+### 2026-10-31 — Le Tuan (+ Claude) — Codex computer use for Phase 0 (D-005)
+
+- Le Tuan's Codex can operate a browser through computer use, with full access. Le Tuan asked for one prompt that lets Codex finish the agent-doable Phase 0 work before app design.
+- **Claude's caveat:** the interface does not change platform terms. An AI agent operating a browser is still automated access, and Reddit's policy reportedly names AI agents. The recommended alternative was ~30 minutes of human capture.
+- **Decision:** Le Tuan accepted the risk with constraints → D-005, which teammates should confirm.
+- **Created:**
+  - `prompts/phase0_codex_agent.md` (v1), tasks T1–T8:
+    - T1 — platform policy check on primary pages;
+    - T2 — Reddit DOM check;
+    - T3 — 36 Reddit seeds via a fixed sampling frame;
+    - T4 — enrichment through `r1_enrichment_agent.md`;
+    - T5 — dataset licences;
+    - T6 — service tiers and limits;
+    - T7 — IBM Bob details;
+    - T8 — handoff summary with proposed Journal edits.
+  - `AGENTS.md`, so that Codex follows `CLAUDE.md`.
+- **Updated:** `CLAUDE.md` now records the D-005 exception. `.gitignore` adds `data/external/`.
+- **Still human:** the R1 audit, preferably by Lok Sang or Truyen Anh, since Le Tuan ran the agent; account sign-ups; held-out gold labels.
