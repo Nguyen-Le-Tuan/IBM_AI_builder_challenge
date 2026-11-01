@@ -59,12 +59,15 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 |---|---|---|
 | Team | `DECIDED` 2026-10-31 (Le Tuan) | Le Tuan, Lok Sang, Truyen Anh. Roles are `OPEN` (see §12.1). |
 | MVP domain | `DECIDED` 2026-10-31 (Le Tuan) | Social posts that cite a **scientific/health finding**. Scholarship/job ads move to v2. |
-| Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do sampling decisions, credentials, audits and held-out gold labels (D-004). Exception D-005: Codex with computer use may capture R1 seeds from public Reddit pages (logged out, read only). |
+| Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do sampling decisions, credentials, audits and held-out gold labels (D-004). Agents never browse or call the APIs of social platforms; the D-005 exception is retired (D-006). |
 | Core framing | `RECOMMENDED` (endorsed) | Claim-to-source **diff**, not truth classification (§5). |
 | Label system | `RECOMMENDED` (endorsed) | Two layers: span relation colour + claim-level verdict (§5). |
 | Track | `RECOMMENDED` | AI for Good. Not registered yet. |
 | Content class | `RECOMMENDED` | Posts with a link or explicit citation. Text only. |
-| Platform | `OPEN` (was `RECOMMENDED`) | Own fixture feed page + one real-platform adapter. The Reddit DOM was checked: `shreddit-post` exposes `content-href`, `post-title`, `created-timestamp` and `permalink`; old Reddit uses different markup. **But** Reddit's primary policy texts conflict with research collection (see the next row), so the real-platform choice is reopened (D-006). |
+| Platform / interaction | `DECIDED` 2026-11-01 (D-006) | **Selection-first, platform-agnostic.** The user selects post text (a floating "Check" button or the context menu); the extension anchors to that selection. Demo stage: our own fixture feed (social-feed look, no Facebook branding), plus a "works anywhere" moment on a real page. No platform-specific adapter in the MVP. |
+| Evaluation data | `DECIDED` 2026-11-01 (D-006) | **Held-out:** ~40 **human-written** posts grounded in ~20 low-rights sources (US federal health pages, CC-BY papers, press releases), half faithful, half with known distortions; labeled blind and adjudicated. **Dev:** agent-drafted, human-reviewed posts. **External:** SPICED (MIT), internal use only; Wührl et al. only if the authors confirm the licence. |
+| Reddit pilot data | `DECIDED` 2026-11-01 (D-006) | **Frozen.** Kept in the private repo only to reproduce R1. Never extended, never used in dev/held-out sets, never cited or shown in the submission. |
+| Data handling | `DECIDED` 2026-11-01 (D-006) | Process only user-selected text, **transiently**. The backend stores hashes, evidence URLs and our outputs, not post text. |
 | Platform policy | `VERIFIED` 2026-10-31 (Codex T1) | Reddit Responsible Builder Policy: "Any research that uses Reddit data collected outside of the RFR Program is in violation of this policy." Reddit User Agreement: no collecting data "by any means (automated or otherwise)" except as permitted. X ToS prohibits crawling or scraping without written consent. None of these documents addresses a user-click extension reading the page being viewed. See `docs/research/platform_policies.md`. |
 | R1 pilot | **Final** 2026-10-31 (cross-model audit + LT decision) | 29 Reddit seeds (target 36; r/nutrition yielded 1/8). |
 | | | **Source found within 2 hops: 23/29 (79%)**, above the 50% threshold → the content class is kept. |
@@ -92,9 +95,9 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `DECIDED` |
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
 | D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED`. The "humans capture social posts" clause is superseded by D-005 for Reddit only. |
-| D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `DECIDED`. Under review in D-006: the run used a signed-in session, and the primary policy conflicts. |
+| D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `SUPERSEDED by D-006` (2026-11-01). The run used a signed-in session, and Reddit's primary policy conflicts. |
 | D-007 | 2026-10-31 | **"Source found" definition (R1 and later datasets):** a verified sentence in hop 1 or the primary source that the post's claim can be compared against, **including a contradicting sentence**. A contradiction is a verdict, not a missing source. When several fetches exist, a row counts as found if any fetch retrieved such a sentence. | Le Tuan | `DECIDED` |
-| D-006 | 2026-10-31 | **To decide:** after the verified Reddit policy conflict, (a) keep, quarantine or delete the 29 Reddit pilot rows; (b) build dev and held-out data from non-Reddit sources (e.g. SPICED, our own fixture posts, a permissive platform); (c) choose the real-platform adapter, if any; (d) whether D-005 stays in force. | Team | `OPEN` |
+| D-006 | 2026-11-01 | Response to the verified Reddit and X policy conflicts:<br>**(a)** Freeze the 29 Reddit pilot rows: kept to reproduce R1, never reused, never cited or shown publicly.<br>**(b)** Evaluation data:<br>• held-out = ~40 human-written posts grounded in ~20 low-rights sources (public-domain US government health pages, CC-BY papers, press releases), half faithful, labeled blind with adjudication;<br>• dev = agent-drafted, human-reviewed posts;<br>• external = SPICED (MIT), internal use only; Wührl et al. only after licence confirmation.<br>**(c)** Selection-first, platform-agnostic extension: no platform adapter in the MVP; the demo uses our own fixture feed plus a live "works anywhere" moment.<br>**(d)** D-005 is superseded; agents never browse social platforms.<br>**(e)** Process user-selected text transiently; store no post text. | Le Tuan (on Claude's recommendation) | `DECIDED` |
 
 ---
 
@@ -296,7 +299,12 @@ Feeds re-render, "See more" expands text, and the DOM nests deeply.
 
 ## 8. MVP scope
 
-**One sentence.** The user clicks Check on **one post that cites a scientific/health finding**. The extension highlights the phrases distorted relative to the source and shows the chain post → article → study, along observed links/DOIs only, with at most 2 hops.
+**One sentence (updated by D-006).** The user **selects** the text of one post that cites a scientific or health finding, then clicks Check. The extension:
+- compares the post with the page it links to (hop 1);
+- highlights the phrases that differ;
+- shows the chain post → article → study as metadata, along observed links and DOIs only.
+
+R1 found a comparable hop-1 sentence for ~79% of posts. Study text was readable for only ~17%.
 
 **Why this domain** (D-001):
 - The source chain is often observable through links and DOIs. Structured metadata is available from Crossref, OpenAlex and PubMed, though their terms and rate limits still need checking.
@@ -312,15 +320,30 @@ Feeds re-render, "See more" expands text, and the DOM nests deeply.
 - But ads usually carry no source link, calling something a "scam" is risky, and there is no dataset.
 - The same "diff the post against the official page" pipeline can serve scholarship ads in v2.
 
-**Platform** (`RECOMMENDED`).
-- **Facebook is the hardest first target:** login wall, obfuscated classes, a virtualized feed, and hard for judges to reproduce.
-- **(a) Our own fixture feed page.** Social-feed look, no Facebook branding. Posts are written by us from real distortion patterns and link to real open-access sources. It serves as the dev environment, the regression tests and the video's opening scene. The video must say clearly that it is a test page.
-- **(b) One real-platform adapter.** Leaning Reddit: viewable without login, and link posts carry the source URL. Our belief that `shreddit-post` exposes attributes like `content-href` is **unverified**; check it in DevTools.
-- Both share one `PlatformAdapter` interface.
-- **Data-access constraint** (reported, `HYPOTHESIS` until checked against Reddit's own pages): Reddit's Responsible Builder Policy (announced on r/redditdev, Nov 2025) requires approval for Data API access and names AI agents.
-  - Datasets therefore come from human-captured posts, not API or agent scraping.
-  - The extension reads the DOM of a page the user is viewing, on user click. It does not use the Data API.
-  - Whether the policy affects such extensions is `OPEN`.
+**Platform and interaction** (`DECIDED`, D-006, 2026-11-01).
+
+**Selection-first.**
+- The user selects post text. A floating "Check" button appears, or the user uses the context menu.
+- The extension anchors to the selection's `Range`, which gives exact character anchoring with no platform DOM selectors.
+- **Source link:** the nearest external `<a href>` in the selection's container. If there is none, the extension asks the user to paste or confirm the link.
+
+**Demo stage.**
+- **(a) Our own fixture feed page.** Social-feed look, no Facebook branding. Posts are written by us and link to real low-rights sources. On our own page a per-post "Check" button is allowed. It serves as the dev environment, the regression tests and the video's opening scene, and the video must say clearly that it is a test page.
+- **(b) A live "works anywhere" moment.** Selection mode on a real public page.
+
+**Why not a platform adapter** (`VERIFIED` policy facts, `docs/research/platform_policies.md`):
+- Reddit's Responsible Builder Policy says research with Reddit data outside its RFR program violates the policy.
+- Reddit's User Agreement bars collection "by any means (automated or otherwise)".
+- X bans scraping.
+- None of them addresses a user-initiated extension, but **user-selected, transiently processed text** is the most defensible position.
+
+**Platform-specific one-click adapters** are post-MVP and need their own policy review. For reference, the Reddit DOM (checked while signed in) exposes `shreddit-post[content-href|post-title|created-timestamp|permalink]`.
+
+**Trade-offs we accept:**
+- one extra gesture (selecting text);
+- less reliable link discovery than an adapter.
+
+**Pitch line:** "Works wherever you read — no platform API, no scraping, only what you choose to check."
 
 **Out of MVP scope:**
 - automatic feed checking;
@@ -336,7 +359,7 @@ Feeds re-render, "See more" expands text, and the DOM nests deeply.
 
 ```
 Content script ──PostSnapshot──▶ Service worker ──POST /checks──▶ FastAPI + SQLite
- (platform adapter, anchoring,    (network relay, no secrets,     in-process job runner,
+ (selection handler, anchoring,  (network relay, no secrets,     in-process job runner,
   hover card in Shadow DOM)        state in chrome.storage.session) docs cache, results
        ▲                                  │ poll GET /checks/{id}
        └──────────── Annotation ◀─────────┘
@@ -432,9 +455,32 @@ If we replay a cached result, label it on screen.
 
 ### Evaluation protocol
 
-**Held-out set.**
-- ~40 posts, frozen before final prompt tuning, kept separate from the dev set.
-- With three members, **double-annotate** every held-out item, have the third member adjudicate disagreements, and report inter-annotator agreement (e.g. Cohen's kappa).
+**Held-out set** (D-006).
+
+**Sources.**
+- Pick ~20 sources with few third-party rights:
+  - US federal health pages such as CDC, NIH and FDA (federal works are public domain);
+  - CC-BY open-access papers;
+  - press releases.
+- An agent may list candidate sources; a human approves each one.
+
+**Writing the posts.**
+- For each source, a **human** writes:
+  - one faithful post;
+  - one post with known distortion(s), modeled on real **patterns**, not on real posts' text.
+- Total: ~40 posts.
+- Held-out posts must not be LLM-written: LLM-written distortions can leave style artifacts that inflate an LLM detector's score.
+
+**Labels.**
+- The writer records the intended spans and types.
+- A second member labels **blind**; the third member adjudicates.
+- Report inter-annotator agreement (e.g. Cohen's kappa).
+
+**Freezing.** The set is frozen before final prompt tuning and kept separate from the dev set.
+
+**Dev set.** Agent-drafted posts from the same kinds of sources, human-reviewed. Used only for prompt development.
+
+**Limitation to state publicly.** Constructed posts are not the real distribution of social posts. SPICED partially compensates with real reported findings.
 
 **Metrics**, each reported separately:
 - finding precision/recall by type;
@@ -448,7 +494,14 @@ If we replay a cached result, label it on screen.
 - The strongest search-enabled chatbot we can access gets the same post + URL and is asked to "list where the post differs from the source, with verbatim quotes".
 - Score both systems with the same rubric. Ideally the scorer is a member who did not write the prompts and does not know which output came from which system.
 
-**External check.** A subset of the Wührl et al. data for the certainty / causality / generality classifier, if the licence allows.
+**External checks.**
+
+- **SPICED** (MIT; test split of 640 pairs):
+  - Measures our comparison step (same finding vs changed information) on real news and tweet text.
+  - Internal use only; do not redistribute the tweet text.
+- **Wührl et al.**:
+  - For the certainty / causality / generality classifier.
+  - Only after the authors confirm the licence (none was found on the dataset page).
 
 **Mini user test.**
 - 6–10 people, 4 posts each, with and without the extension.
@@ -474,7 +527,7 @@ Calendar notes:
 | 0 | until Nov 1 | No product code. SkillsBuild certificates, eligibility email, R1 data collection, labeling guideline v0. |
 | 1 | Nov 2–4 | Each member registers individually; form the team; choose the track. |
 | W1 | Nov 5–11 | With Bob: repo skeleton, Pydantic schemas, CLI pipeline, validators. Run R2 on 20 dev pairs. **Gate.** |
-| W2 | Nov 12–18 | Fixture feed, content script (R3 anchoring and hover), hover card, backend wiring, then the real-platform adapter. |
+| W2 | Nov 12–18 | Fixture feed, content script (R3 anchoring and hover), hover card, backend wiring, then live selection mode on real pages (D-006). |
 | W3 | Nov 19–24 | Hop-2 provenance, held-out evaluation and baseline, resource and cost measurements. **Feature freeze ~Nov 24.** |
 | W4 | Nov 25–Dec 2 | Mini user test, video, slides, project page. Publish by Dec 1; the hard deadline is Dec 2, 5 PM ET. |
 
@@ -573,13 +626,16 @@ These must be **demonstrated** (§11), not asserted.
 - Workstream owners and weekly hours per member.
 - LLM provider. Is a watsonx.ai Granite model adequate on the dev set?
 - Docling vs trafilatura for source extraction (measure).
-- Reddit DOM attributes (verify), or choose X instead.
-- Dataset licences (Wührl et al.).
+- **D-008 (next):** where is hop 1 fetched?
+  - Options: the backend; the extension inside the user's browser; or reading the article tab the user opened.
+  - Why it matters: ~21% of hop-1 pages block server-side fetches (R1).
+  - Trade-offs: privacy, site terms, and copyright for paywalled text.
+- Dataset licence: Wührl et al. (email the authors).
 - Eligibility answer from BeMyApp, for each member.
 - Deployment host.
 - Is work done before Nov 2 (manual dataset, documents) acceptable? We believe yes since it is not code, but it is not addressed in the rules. We may ask the organizers.
-- Should we add a fully automated sample from an open platform (e.g. the Bluesky API)? It needs a human-created app password, and it measures a different platform than our demo.
-- Does Reddit's Responsible Builder Policy affect browser extensions that read pages the user is viewing? Check Reddit's own pages.
+- Real posts from an open platform (e.g. Bluesky) for qualitative checks? Its developer guidelines require honouring deletions, and a 2024 Bluesky dataset drew strong community backlash (secondary sources). This is not planned; it would need its own decision.
+- Platform-specific one-click adapters after the MVP: needs a policy review per platform.
 
 ---
 
@@ -782,3 +838,34 @@ These must be **demonstrated** (§11), not asserted.
 1. The core comparison is post ↔ hop 1 (feasible for ~79%).
 2. The provenance strip post → article → study is feasible as **metadata** for ~half of posts (title, journal, date via Crossref). Claim-level comparison against the study is rarely possible.
 3. ~21% of hop-1 pages block server-side fetching. Consider fetching hop 1 in the user's browser on click, after reviewing privacy and site terms.
+
+### 2026-11-01 — Le Tuan (+ Claude) — D-006 decided: selection-first, constructed held-out set
+
+Claude analysed D-006 as four questions plus one principle. Le Tuan accepted the full recommendation, recorded as D-006 in §2.
+
+**(a) Reddit pilot data: frozen.**
+- Kept only to reproduce R1; never reused, cited or shown.
+- The R1 design lessons stay internal: hop 1 is feasible, the study is rarely readable.
+
+**(b) Evaluation data.**
+- **Held-out:** ~40 **human-written** posts grounded in ~20 low-rights sources, half faithful, labeled blind with adjudication. They must be human-written to avoid LLM style artifacts.
+- **Dev:** agent-drafted, human-reviewed posts.
+- **External:** SPICED (MIT, internal use); Wührl et al. after licence confirmation.
+- **Stated limitation:** constructed posts are not the real distribution.
+
+**(c) Selection-first, platform-agnostic extension.**
+- The user selects text, then clicks Check; anchoring uses the selection's `Range`.
+- The source link comes from the nearest external anchor, or the user pastes it.
+- The demo uses our fixture feed plus a live "works anywhere" moment.
+- Platform adapters are post-MVP and need their own policy review.
+
+**(d) D-005 superseded.**
+- The `CLAUDE.md` exception was removed; agents never browse social platforms.
+- `prompts/phase0_codex_agent.md` is marked RETIRED for T2/T3.
+
+**(e) Data handling.** Process user-selected text transiently; store hashes, evidence URLs and outputs, not post text.
+
+**Plan updates.**
+- §1 rows: platform/interaction, evaluation data, pilot data, data handling.
+- §8 platform section, §9 diagram label, §11 evaluation protocol, §12 W2 and §14 open questions updated.
+- New next decision: **D-008**, where hop 1 is fetched.

@@ -40,12 +40,16 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [ ] | Agree on an API budget ceiling (even a rough tier) | ALL | Record in Journal §2 |
 | [x] | **Run the Codex Phase 0 agent** (`prompts/phase0_codex_agent.md`, T1–T8) | LT | Done 2026-10-31. T1/T5/T7 done; T2/T3/T4/T6 partial. Summary in `docs/research/phase0_summary.md`; results in Journal §15 |
 | [x] | Review Codex output, then commit | LT | Claude reviewed it; committed in 5445c1a (2026-10-31) |
-| [ ] | **Decide D-006**: what to do with the Reddit pilot data, where dev/held-out data comes from, and the real-platform adapter | ALL | Replaces "confirm D-005". Journal §2. First item of the design discussion |
-| [ ] | (Optional) Human seeds from X or Facebook for platform diversity, 6 each → `seeds_LS.csv`, `seeds_TA.csv` | LS, TA | Rules in `data/r1/README.md`. Codex T4, or a re-run of `r1_enrichment_agent.md`, enriches them |
+| [x] | **Decide D-006**: what to do with the Reddit pilot data, where dev/held-out data comes from, and the real-platform adapter | LT | Decided 2026-11-01: freeze the pilot data; human-written held-out; selection-first extension; D-005 superseded. Journal §2 |
+| [ ] | Email the Wührl et al. authors to ask about the dataset licence (evaluation use only) | TBD | Dataset page: uni-bamberg.de NLP resources. No licence was found (Codex T5) |
+| [ ] | Approve ~20 held-out source pages (US federal health pages, CC-BY papers, press releases) | ALL | An agent will list candidates (prompt to be written); a human approves each one. Journal §11 |
+| [ ] | **Write held-out posts by hand:** for each approved source, 1 faithful + 1 distorted post, recording the intended spans and types (~13–14 posts each) | LT, LS, TA | Must be human-written, not LLM-written (D-006). Follow `docs/labeling_guideline_v0.md`. Blind labeling and adjudication follow |
+| [ ] | Decide D-008: where hop 1 is fetched (backend vs user's browser vs open article tab) | ALL | Next design decision. Journal §14 |
+| [x] | ~~(Optional) Human seeds from X or Facebook~~ | — | Cancelled 2026-11-01 by D-006: R1 is closed and no social-platform collection |
 | [x] | **R1 step 3a:** run the cross-model audit in Claude Code with the strongest model: `prompts/r1_crossmodel_audit.md` (all 29 rows) | TA | Done 2026-10-31 (commit 510c640). Output: `data/r1/audit_xm_TA.csv` and `.md` |
 | [x] | **R1 step 3b:** human check of the escalated and spot-check rows from `audit_xm_TA.md` | LT (with Claude) | Done 2026-10-31: 8 rows recorded in the `r1_CX.csv` audit columns. Journal §15 |
 | [x] | **R1 step 4:** combine the R1 results; record the numbers in Journal §15 and any decision in §2 | LT (with Claude) | Done 2026-10-31: final R1 = 23/29 source found (79%); D-007 added. Pilot only until D-006 |
-| [ ] | Decide whether to add an automated open-platform sample (e.g. the Bluesky API) | ALL | Optional. Needs a human-created app password. Journal §14 |
+| [x] | ~~Decide whether to add an automated open-platform sample (Bluesky)~~ | — | Not planned under D-006. Would need its own decision (Journal §14) |
 | [~] | Write labeling guideline v0: finding types, Coral vs Amber rule, omissions, abstain | TBD (C) | Draft by Claude 2026-10-31 at `docs/labeling_guideline_v0.md` |
 | [ ] | Review guideline v0 and answer its §11 open questions; record agreed changes | ALL | Do this before labeling the dev set |
 | [x] | Verify the Reddit DOM in DevTools (does `shreddit-post` have `content-href`, `post-title`, `created-timestamp`?) | Codex T2 | Done; observed while signed in. `docs/research/reddit_dom_check.md` |
@@ -81,11 +85,11 @@ This file tracks what the team still has to do. The reasoning behind each task l
 
 | Status | Task | Owner | Notes |
 |---|---|---|---|
-| [ ] | Fixture feed page: social-feed look, no Facebook branding, our own posts linking to real open-access sources | B | Journal §8 |
+| [ ] | Fixture feed page: social-feed look, no Facebook branding, our own posts linking to real low-rights sources, with a per-post "Check" button | B | Journal §8 (D-006) |
 | [ ] | **R3 spike:** Custom Highlight API + hover hit-testing; 20/20 fixture posts correct after scroll and expand | B | Journal §7 |
 | [ ] | Hover card UI (Shadow DOM, flat colours, icon + text per label, side-by-side quotes) | B | Journal §4–§5 |
 | [ ] | Service worker relay + backend job polling | A + B | |
-| [ ] | Real-platform adapter (Reddit, or X if the DOM check fails) | B | |
+| [ ] | Selection mode on real pages: floating "Check" button + context menu, `Range` anchoring, nearest-link discovery or a paste-URL prompt | B | Replaces the platform adapter (D-006) |
 
 ## Week 3 — Nov 19–24: Provenance + evaluation (feature freeze ~Nov 24)
 

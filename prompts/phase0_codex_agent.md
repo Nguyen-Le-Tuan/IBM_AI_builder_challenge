@@ -1,5 +1,7 @@
 # Phase 0 Agent Prompt — Codex with Computer Use
 
+> **RETIRED (2026-11-01, D-006).** Do not run T2 or T3: agents must not browse social platforms. This file is kept as a record of the Phase 0 run. Results are in `docs/research/` and `data/r1/` (Reddit data frozen).
+
 **Version:** v1 (2026-10-31)
 **Purpose:** finish the agent-doable Phase 0 work before the team starts app design.
 **Decisions:** D-004 (agents do automatable work) and D-005 (logged-out, read-only browsing of public Reddit pages for R1 seeds). Both are in `Journal.md` §2.

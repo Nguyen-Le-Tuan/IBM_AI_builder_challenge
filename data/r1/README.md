@@ -1,5 +1,10 @@
 # R1 — Source-acquisition experiment
 
+> **Status (2026-11-01, D-006): closed and frozen.**
+> - R1 ran once on 29 Reddit posts. Final result: source found 23/29 (Journal §1, §15).
+> - The `*_CX*` files are kept only so R1 can be reproduced. Never extend them, never reuse them in dev or held-out sets, and never cite or show them in submission materials.
+> - Do not collect new posts from social platforms. Evaluation data now comes from human-written posts grounded in low-rights sources (Journal §11).
+
 **Question.** For real social posts that report a scientific or health finding, can we find the source sentence behind the post within **2 hops**? The two hops are the page the post links to (hop 1) and the study it relies on (primary).
 
 If not, the pipeline will mostly output Slate ("not found in source"), and we need to change the content class or add a search fallback. See `Journal.md` §7.
