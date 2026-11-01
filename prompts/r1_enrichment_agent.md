@@ -1,6 +1,12 @@
 # Agent Prompt — R1 Enrichment
 
-**Version:** v1 (2026-10-31). **Works with:** Claude Code or Codex.
+**Version:** v1.1 (2026-10-31). **Works with:** Claude Code or Codex.
+
+**Changes in v1.1** (from the R1 cross-model audit, D-007):
+
+- **Step 5a:** scan the whole page for study links, not only links near "study" wording. This fixes 7/29 study links missed in v1.
+- **Step 6:** fill `primary_url` whenever a DOI is known.
+- **Step 8:** a contradicting sentence counts as "found".
 
 ## How to run
 
@@ -154,7 +160,18 @@ Set `linked_kind` from the domain and page signals: `news_article`, `press_relea
 3. links to scholarly domains (journals, PubMed/PMC, arXiv, bioRxiv/medRxiv);
 4. press-release links.
 
-Pick the candidate the article attributes the finding to: anchor text or a nearby sentence mentions "study", "published in", "journal" or "researchers". Set `primary_link_basis` to `hyperlink` or `doi`, and record `primary_doi` if known.
+Pick the candidate the article attributes the finding to: anchor text or a nearby sentence mentions "study", "published in", "journal" or "researchers".
+
+Set `primary_link_basis` to `hyperlink` or `doi`, and record `primary_doi` if known.
+
+**Scan the whole page (v1.1):**
+
+- Collect candidates from **every** `<a href>` **and** from DOIs printed in the visible text, including footers and "Reference" / "More information" blocks.
+- Do not require "study" wording right next to the link.
+- **Ignore** the publisher's own DOIs for the article itself, e.g. a news site's `10.1038/scientificamerican…` identifiers.
+- **Ignore** links to unrelated papers.
+
+In v1, 7/29 hyperlinked or printed study links were missed.
 
 **5b. Named source, no link.** If hop 1 or the post names the venue and details, you may resolve the source with Crossref `query.bibliographic`. Accept a match only if **at least 2 of these 4** match: title words, journal, year/month, an author surname. Then set:
 
@@ -167,6 +184,8 @@ Otherwise leave the fields empty.
 **5c. Nothing found.** Set `primary_link_basis=none`.
 
 ### Step 6 — Primary text and metadata
+
+Whenever `primary_doi` is known, set `primary_url` to `https://doi.org/<doi>` if no better URL was observed. Never leave `primary_url` empty when a DOI is known (v1.1).
 
 Use the first of these that works and record it in `primary_text_origin`:
 
@@ -196,7 +215,8 @@ Same as Step 4, against the primary text: at most 40 words, contiguous, verified
 
 ### Step 8 — R1 outcome
 
-- `source_found_within_2_hops=yes` if a **verified** quote (hop 1 or primary) states the same finding as `main_claim_quote`, possibly with different strength or scope. Otherwise `no`.
+- `source_found_within_2_hops=yes` if a **verified** quote (hop 1 or primary) is a sentence the post's claim can be compared against. That includes a sentence that states the same finding (possibly with different strength or scope) **and** a sentence that contradicts it (D-007, v1.1). Otherwise `no`.
+- A contradiction is a verdict matter, not a missing source. Note it in `model_notes` and `model_candidate_types`.
 - `relevance_confidence`: `high` or `low`.
 
 ### Step 9 — Model judgment

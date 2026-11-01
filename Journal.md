@@ -66,7 +66,12 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | Content class | `RECOMMENDED` | Posts with a link or explicit citation. Text only. |
 | Platform | `OPEN` (was `RECOMMENDED`) | Own fixture feed page + one real-platform adapter. The Reddit DOM was checked: `shreddit-post` exposes `content-href`, `post-title`, `created-timestamp` and `permalink`; old Reddit uses different markup. **But** Reddit's primary policy texts conflict with research collection (see the next row), so the real-platform choice is reopened (D-006). |
 | Platform policy | `VERIFIED` 2026-10-31 (Codex T1) | Reddit Responsible Builder Policy: "Any research that uses Reddit data collected outside of the RFR Program is in violation of this policy." Reddit User Agreement: no collecting data "by any means (automated or otherwise)" except as permitted. X ToS prohibits crawling or scraping without written consent. None of these documents addresses a user-click extension reading the page being viewed. See `docs/research/platform_policies.md`. |
-| R1 pilot | `VERIFIED` mechanically; semantics provisional (audit pending) | 29 Reddit seeds (target 36; r/nutrition yielded 1/8). Source passage found within 2 hops: **21/29 (72%)**, almost all at hop 1. Primary reachable: only **5/29**. Hop 1 blocked or paywalled: 7/29. All quotes were re-verified independently by Claude. Details in §15. |
+| R1 pilot | **Final** 2026-10-31 (cross-model audit + LT decision) | 29 Reddit seeds (target 36; r/nutrition yielded 1/8). |
+| | | **Source found within 2 hops: 23/29 (79%)**, above the 50% threshold → the content class is kept. |
+| | | **6/29 (21%)** were blocked for every server-side fetch (Cloudflare / Akamai / bot checks). |
+| | | Study link present: **16/29 (55%)**. Study text readable: only **5/29**. |
+| | | Codex enrichment errors: 0 wrong after reconciliation; 11 partly, mostly missed study links (fixed in prompt v1.1). |
+| | | Pilot only. Not reused for dev or held-out sets until D-006 is decided. Details in §15. |
 | Trigger | `RECOMMENDED` | User clicks Check. No automatic feed scanning in the MVP. |
 | Language | `RECOMMENDED` | English (the submission must be in English). |
 | Model training | `RECOMMENDED` | No training or fine-tuning in the MVP. |
@@ -88,6 +93,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
 | D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED`. The "humans capture social posts" clause is superseded by D-005 for Reddit only. |
 | D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `DECIDED`. Under review in D-006: the run used a signed-in session, and the primary policy conflicts. |
+| D-007 | 2026-10-31 | **"Source found" definition (R1 and later datasets):** a verified sentence in hop 1 or the primary source that the post's claim can be compared against, **including a contradicting sentence**. A contradiction is a verdict, not a missing source. When several fetches exist, a row counts as found if any fetch retrieved such a sentence. | Le Tuan | `DECIDED` |
 | D-006 | 2026-10-31 | **To decide:** after the verified Reddit policy conflict, (a) keep, quarantine or delete the 29 Reddit pilot rows; (b) build dev and held-out data from non-Reddit sources (e.g. SPICED, our own fixture posts, a permissive platform); (c) choose the real-platform adapter, if any; (d) whether D-005 stays in force. | Team | `OPEN` |
 
 ---
@@ -726,3 +732,53 @@ These must be **demonstrated** (§11), not asserted.
   - The prompt escalates rows to a human.
   - Because `data/r1/cache/` is gitignored, Truyen Anh's run re-fetches pages. Pages may have changed since Codex's fetch.
 - `data/r1/README.md` step 3 and `HUMAN_TODO.md` updated to match.
+
+### 2026-10-31 — Truyen Anh (+ Claude Opus), Le Tuan (+ Claude) — R1 audit result and final numbers
+
+**Cross-model audit (TA).** Output: `data/r1/audit_xm_TA.csv` and `.md`, run with Claude Code `claude-opus-5-5` on all 29 rows.
+
+- Phase A was done blind. All 21 of TA's quotes were verified mechanically. TA committed only its two files.
+- Codex grades: correct 16, partly 11, wrong 2.
+- Agreement on found yes/no: 25/29, Cohen's kappa 0.66. Three of the four disagreements were access differences between networks.
+- TA's Claude is the same model family as the Claude that reviewed Codex earlier, so errors may be correlated.
+
+**Claude's verification of the audit.**
+- All 20 of TA's quotes on pages open for both runs are also verbatim in Codex's cache, so the pages had not changed.
+- Codex's cached HTML confirms the study links it missed for CX-004, -009, -010, -022 and -025. This is a systematic bug in its link extraction.
+
+**Human check (LT approved Claude's evidence summary for the 8 escalated and spot-check rows).** Recorded in the `r1_CX.csv` audit columns (`auditor=LT`).
+
+| Row | Codex grade | Final found | Reason |
+|---|---|---|---|
+| CX-004 | partly | yes | missed study link |
+| CX-005 | correct | yes | XM blocked by Nature |
+| CX-012 | correct | yes | |
+| CX-018 | partly | yes | weak hop-1 quote; better quote on the same page; empty `primary_url` despite a DOI |
+| CX-019 | partly | yes | missed Nature link |
+| CX-020 | correct | **yes** | XM fetched what Codex could not |
+| CX-024 | correct | yes | XM blocked by Nature |
+| CX-027 | correct | **yes** | see correction below |
+
+- **Correction by Claude:** before approval, Claude told LT that Codex was "wrong" on CX-027 under the README definition. Re-checking showed that the "can be compared against" wording existed only in README v0. Codex's prompt (Step 8) required a sentence stating the same finding, so Codex followed its spec. The gap was in our spec, now fixed by D-007.
+- Codex's original 6-row audit sample was superseded by the escalation list; `audit_selected` now marks the 8 human-checked rows.
+
+**Final R1** (n = 29, Reddit-only, signed-in capture):
+
+| Measure | Result |
+|---|---|
+| Source found | 23/29 (79%) |
+| Blocked for every server-side fetch | 6/29 (CX-002, -006, -008, -014, -015, -028) |
+| Study link present on the hop-1 page | 16/29 |
+| Study text readable | 5/29 |
+
+**Process fixes.**
+- `prompts/r1_enrichment_agent.md` is now v1.1:
+  - scan the whole page for study links;
+  - fill `primary_url` from the DOI;
+  - contradicting sentences count as found.
+- `data/r1/README.md` now defines "source found".
+
+**Design implications** (`RECOMMENDED`, for the D-006 discussion):
+1. The core comparison is post ↔ hop 1 (feasible for ~79%).
+2. The provenance strip post → article → study is feasible as **metadata** for ~half of posts (title, journal, date via Crossref). Claim-level comparison against the study is rarely possible.
+3. ~21% of hop-1 pages block server-side fetching. Consider fetching hop 1 in the user's browser on click, after reviewing privacy and site terms.

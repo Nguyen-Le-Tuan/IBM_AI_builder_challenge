@@ -127,7 +127,7 @@ We need **both faithful and distorted** posts. Otherwise false alarms are imposs
 | `primary_date_type` | `online` / `print` / `issued` |
 | `primary_finding_quote` | ≤ 40 words, verbatim |
 | `primary_quote_verified` | `true` / `false` / empty |
-| `source_found_within_2_hops` | `yes` / `no` — **the R1 metric** |
+| `source_found_within_2_hops` | `yes` / `no` — **the R1 metric**. `yes` if a verified sentence in hop 1 or the primary source can be compared against the post's claim, **including a sentence that contradicts it** (D-007). When reconciling several fetches, a row counts as found if any of our fetches retrieved such a sentence. |
 | `relevance_confidence` | `high` / `low` |
 | `model_impression` | `faithful` / `distorted` / `unsure` — **model output, not a label** |
 | `model_candidate_types` | Guideline §5 type names, separated by `;` |
