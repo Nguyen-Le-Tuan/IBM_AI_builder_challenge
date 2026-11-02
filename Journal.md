@@ -99,6 +99,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-007 | 2026-10-31 | **"Source found" definition (R1 and later datasets):** a verified sentence in hop 1 or the primary source that the post's claim can be compared against, **including a contradicting sentence**. A contradiction is a verdict, not a missing source. When several fetches exist, a row counts as found if any fetch retrieved such a sentence. | Le Tuan | `DECIDED` |
 | D-006 | 2026-11-01 | Response to the verified Reddit and X policy conflicts:<br>**(a)** Freeze the 29 Reddit pilot rows: kept to reproduce R1, never reused, never cited or shown publicly.<br>**(b)** Evaluation data:<br>• held-out = ~40 human-written posts grounded in ~20 low-rights sources (public-domain US government health pages, CC-BY papers, press releases), half faithful, labeled blind with adjudication;<br>• dev = agent-drafted, human-reviewed posts;<br>• external = SPICED (MIT), internal use only; Wührl et al. only after licence confirmation.<br>**(c)** Selection-first, platform-agnostic extension: no platform adapter in the MVP; the demo uses our own fixture feed plus a live "works anywhere" moment.<br>**(d)** D-005 is superseded; agents never browse social platforms.<br>**(e)** Process user-selected text transiently; store no post text. | Le Tuan (on Claude's recommendation) | `DECIDED` |
 | D-009 | 2026-11-02 | **Rights tiering assesses text and images separately.** We reuse only text. A third-party image credit does not demote a US federal page's text from Tier A. A third-party notice on the text itself still does. Applied to NIH SRC-005 to SRC-012 (C→A, text-only). | Le Tuan (on Claude's recommendation) | `DECIDED` |
+| D-010 | 2026-11-02 | **Source selection delegated to Claude.** LT delegated filling `human_decision` for the 55 source candidates to Claude, under LT's oversight; `approved_by` records the delegation. Held-out **posts** and gold labels stay human-written (D-006). Teammates may object; that would be recorded as a new decision. | Le Tuan | `DECIDED` |
 
 ---
 
@@ -923,3 +924,21 @@ The edits are documented in an addendum to `source_candidates.md`. Next: Codex r
 **Next.**
 - The team fills `human_decision` and `approved_by`.
 - Codex suggests a balanced held-out shortlist of 10 government pages and 10 papers in `source_candidates.md`.
+
+### 2026-11-02 — Le Tuan (+ Claude) — Source selection (D-010)
+
+LT delegated the source split to Claude, with LT overseeing (D-010).
+
+**Result:** 20 heldout (10 government pages + 10 CC papers), 32 dev, 3 reject.
+- **Rejected:** SRC-046 (rTMS depression, harm); SRC-002 and SRC-021 (too technical for realistic posts).
+- **Dev, with caution flags:** SRC-011, 016, 043, 045 and 047, for stigma, suicide, or children's mental-health treatment.
+- **Departures from Codex's shortlist:**
+  - SRC-016 moved to dev (suicide).
+  - SRC-041, 043, 045 and 053 replaced by SRC-005, 009, 012 and 054, for harm and realism and to give 4 animal studies.
+  - SRC-050 replaced by SRC-029 (dose condition).
+
+**Held-out coverage:** 4 animal studies; 8 published before 2024-11-02; 1 null result; ≤2 sources per broad topic. No underlying study is shared across the 55.
+
+**Records:** the rationale for every held-out pick is in the "Source selection" section of `data/sources/source_candidates.md`.
+
+**Note:** Claude's own attempt to edit `CLAUDE.md` was blocked by the session's permission guard. That is intended: rules that bind agents are edited by humans. LT then edited `CLAUDE.md` personally, so agents may fill human or audit columns only under an explicit, logged delegation. Held-out posts, held-out gold labels, and audits of an agent's own output are **never** delegated.

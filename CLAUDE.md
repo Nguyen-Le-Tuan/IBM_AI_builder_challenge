@@ -30,7 +30,7 @@ Team members: Le Tuan, Lok Sang, Truyen Anh. Each of us works with our own Claud
   - Never browse, scrape, or call the APIs of social platforms. D-006 retired the earlier D-005 exception.
   - Never reuse the frozen Reddit pilot data (`data/r1/*_CX*`) for any dataset, metric, demo, or submission material.
   - Never solve or work around CAPTCHAs or bot checks.
-  - Never fill human columns (e.g. `human_impression`) or audit columns.
+  - Never fill human columns (e.g. `human_impression`, `human_decision`) or audit columns, unless a team member explicitly asks for it in the session and the delegation is logged as a decision in Journal §2 (e.g. D-010). Record the delegation in the column itself (e.g. `approved_by = Claude (LT-delegated, D-0xx)`). Never delegated: held-out posts, held-out gold labels, and audits of an agent's own output.
   - Never commit without human review.
   - Put data tooling in `tools/`, not in product code.
 - **No fabrication.** Never invent metrics, citations, URLs, quotes, provenance chains, independent-source counts, competitor gaps, or "first in market" claims. Label mock data as `MOCK`.

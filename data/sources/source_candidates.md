@@ -176,3 +176,60 @@ The study-type totals regroup the specific CSV labels consistently across all 55
 - **SRC-040 — social connection:** older meta-analysis with a relative effect estimate.
 
 **Limitations.** NIA pages and its reuse FAQ returned HTTP 405 human-verification pages to a plain fetch, so none were included. Six separate study sites returned HTTP 403; the government source pages remained readable and linked to those studies. The government pages often summarize observational associations, pilot studies, or secondary analyses, and the CSV notes those boundaries. Human reviewers must approve the held-out/dev split and verify that each chosen finding is suitable for the intended posts.
+
+## Source selection — 2026-11-02 (D-010: delegated by LT to Claude)
+
+LT asked Claude to review the 55 candidates and fill `human_decision`, with LT overseeing. `approved_by` = `Claude (LT-delegated, D-010)`. Result: **20 heldout, 32 dev, 3 reject**.
+
+### Criteria, applied in order
+
+1. **Harm and stigma.**
+   - No held-out source where a distorted post could plausibly cause harm: treatment of serious conditions, suicide, or stigma towards a group or a child diagnosis.
+   - Such sources go to dev, or are rejected.
+2. **Realism.** The finding must be one a lay social post would plausibly report. Highly technical findings are rejected or sent to dev.
+3. **Balance.** 10 government plain-language pages plus 10 CC papers. This reflects that real hop-1 pages are mostly news-style (R1), while keeping paper-style sources.
+4. **Coverage across the 20:**
+   - animal or in-vitro: 4 (SRC-005, 007, 009, 054);
+   - published before 2024-11-02, for time-mismatch posts: 8;
+   - slot counts: `population` 18, `conditions` 17, `relation` 14, `quantity` 12, `certainty` 5, `attribution` 5, `time` 3;
+   - null results, for direction-contradiction posts: SRC-033.
+5. **Diversity.** At most 2 held-out sources per broad topic, each asking a different question. No shared underlying study anywhere in the 55: Claude checked DOIs and links.
+
+### Held-out (20)
+
+| ID | Why |
+|---|---|
+| SRC-004 | Sodium crossover trial: "nearly 75%" and "7 mm Hg" invite `quantity` and `scope` edits. |
+| SRC-005 | Hedged ("may reduce"), human + mouse evidence: tests `certainty_strengthened` and population. |
+| SRC-007 | Mouse gut–brain memory study: a classic mice→people case. |
+| SRC-009 | GLP-1 extends lifespan in **older female mice**: highly shareable, and a strong `population_omitted` case. |
+| SRC-012 | 2022 sleep→calorie RCT in overweight adults: time-mismatch and scope. |
+| SRC-044 | Survey of alcohol use among cancer survivors (~40% hazardous): `quantity` and population. |
+| SRC-049 | Cohort, 26% lower cancer risk: association→causation (`causality_strengthened`). |
+| SRC-052 | Weekend-warrior cohort, ">40% lower diabetes risk": `quantity` (lower bound) and causality. |
+| SRC-054 | Mice lost about a third of body weight in a week: viral diet-claim distortions. |
+| SRC-055 | 2020 cohort, "nearly twice as likely": `stale_presented_as_new` and causality. |
+| SRC-003 | PM2.5 and pregnancy hypertensive disorders, "but not for GH": `condition_omitted`. |
+| SRC-015 | Light smoking (2–5 a day) HR 1.57: `quantity` and conditions. |
+| SRC-019 | Fall risk of antihypertensives in dementia (absolute risks): subgroup→overall. |
+| SRC-025 | UBI microsimulation, "has potential … highly dependent on": `certainty` and model vs observed. |
+| SRC-026 | Pilot RCT in Kenya/Uganda: scope and certainty from a pilot. |
+| SRC-027 | Cyclones "may have caused" 0.85M child deaths (with CI): certainty and range. |
+| SRC-029 | Alcohol and pancreatic cancer, only at ≥30 g/day: `condition_omitted` (dose). |
+| SRC-031 | Psychiatric bed capacity, 2023 rates: `quantity` and time. |
+| SRC-033 | Hormone therapy, null cognitive result: direction contradiction. |
+| SRC-040 | 2010 meta-analysis, OR 1.50: stale-as-new and odds-ratio wording. |
+
+### Rejected (3)
+
+- **SRC-046:** rTMS treatment for depression. A distorted post would be a harmful treatment claim about a serious condition.
+- **SRC-002, SRC-021:** findings too technical for a realistic lay post (SCN-lesioned mice brown fat; poly-metabolite scores).
+
+### Dev (32), with caution flags
+
+All remaining candidates are dev. When agents draft dev posts, they must **not** produce sensationalised or stigmatising text for:
+
+- **SRC-011:** cognitive impairment among older American Indians (group stigma);
+- **SRC-016:** social-media use, depression and suicide deaths (suicide);
+- **SRC-043, SRC-045:** children's mental-health treatment;
+- **SRC-047:** conduct disorder brain structure in youth (stigma).
