@@ -106,3 +106,73 @@ These edits were made after the Codex run. All other content above is unchanged.
 - **Self-referencing study links.** For the 31 CC papers, `study_link` pointed to the paper's own DOI. Those rows now read `study_link=self`, `study_link_basis=self`. Only the 9 NIH pages link to a separate underlying study.
 - **Imbalance.** 31/40 candidates are research papers (30 from PLOS Medicine), while R1 showed most real hop-1 pages are news-style. A supplement run (`prompts/source_candidates_agent.md` v1.1) will add ~15 plain-language US government pages before the held-out split is chosen.
 - **Logging.** Claude's independent re-check found 0 problems: every quote verbatim in the cache, all statuses 200, human columns empty, no excluded topics. The run did not log a request count, and some exploratory fetches were spaced under 1 s.
+
+## Supplement run (v1.1)
+
+LT added **SRC-041–SRC-055** on 2026-11-02. These 15 are plain-language US federal research highlights, news stories, or consumer-facing summaries. The first 40 rows and all preceding report sections were retained. The supplement's finding quotes were checked against freshly fetched, cached page text after NFKC, quotation-mark, dash, and whitespace normalization; each quote is at most 40 words. All 15 candidate pages returned HTTP 200 and yielded at least 150 words of main text. The candidate pages, their rights policies, and their recorded study links were fetched in this run.
+
+### Supplement counts and checks
+
+| Check | Result | Evidence |
+|---|---:|---|
+| New candidates | 15 | SRC-041–SRC-055 |
+| Rights and source type | A: 15; `us_gov_page`: 15 | Text-only rights review; `demo_ok=yes` |
+| Distinct outlets | 4, met | NIAMS 2; NIMH 5; NCI 4; NIH Research Matters 4 (maximum 5) |
+| Separate underlying-study links ≥ 10 | 15, met | 14 direct hyperlinks and 1 DOI in article text (SRC-049) |
+| Animal or in-vitro ≥ 2 | 4, met | SRC-041, SRC-042, SRC-053, SRC-054 |
+| Explicitly hedged finding quotes ≥ 3 | 3, met | SRC-041, SRC-043, SRC-045 |
+| Range or relative-risk number ≥ 3 | 3, met | SRC-049 (26% lower risk), SRC-052 (more than 40% lower risk), SRC-055 (nearly twice as likely) |
+| Published before 2024-11-02 ≥ 2 | 12, met | All new rows except SRC-041, SRC-049, SRC-054 |
+| Quote / length / date checks | 15/15, met | Verbatim, ≤40 words, ≥2 slots, page ≥150 words, and published before 2026-10-19 |
+| Duplicate URLs or narrow-topic cap violations | 0 found | Checked against all 55 rows; broad topic labels may contain distinct narrow questions |
+
+The supplement study-type labels are: animal/in-vitro 4; pilot intervention 2; cohort 3; and one each of survey, intervention study, neuroimaging pooled analysis, RCT secondary analysis, program evaluation, and RCT. The topics span cartilage, autoimmunity, childhood mental health, alcohol use, physical activity, cancer care, gut microbiome, metabolism, and sleep.
+
+**Rights evidence by outlet:** [NIAMS](https://www.niams.nih.gov/disclaimer) says its text is public domain; [NIMH](https://www.nimh.nih.gov/site-info/policies) permits text reuse unless otherwise indicated; [NCI](https://www.cancer.gov/policies/copyright-reuse) says its text is free of copyright unless otherwise indicated; [NIH](https://www.nih.gov/about-nih/frequently-asked-questions) says most site information is public domain. The exact short quote for each row is in the CSV. No third-party reuse notice was found on the article text. Page images are excluded from reuse.
+
+### Updated totals across all 55
+
+| Dimension | Count |
+|---|---:|
+| Rights Tier A / B / C | 24 / 31 / 0 |
+| Source type `us_gov_page` / `cc_paper` / other | 24 / 31 / 0 |
+| Animal / in-vitro | 10 |
+| Intervention / trial / crossover | 11 |
+| Observational / program evaluation | 22 |
+| Survey / surveillance | 5 |
+| Systematic review / meta-analysis | 2 |
+| Model / time series / environmental analysis | 5 |
+
+The study-type totals regroup the specific CSV labels consistently across all 55. In this grouping, case-crossover and program evaluation count as observational; pilot interventions count with interventions. This is a fresh grouping rather than an edit to the initial report's table.
+
+**Request log:** 49 script-controlled HTTP requests are recorded in ignored `data/sources/cache/fetch_log.jsonl`, including exploratory page fetches and redirects. Search-engine discovery queries are outside this raw-fetch log. One request to `pubmed.ncbi.nlm.nih.gov:443` followed a request to the same host without the explicit port after 0.85 seconds; the fetcher's per-host pacing treated those as separate host strings. All other repeated-host gaps were at least 1.05 seconds. Of the 15 study-link fetches, 9 reached readable HTTP 200 pages and 6 ended at HTTP 403. The study links were transcribed from the government pages, not inferred from search results.
+
+### Revised suggested held-out shortlist (20; team approval required)
+
+**Government plain-language pages (10):**
+
+- **SRC-004 — sodium and blood pressure:** crossover trial, quantified effect, and a clear comparison group.
+- **SRC-041 — cartilage cells:** NIAMS summary with both mouse and human tissue and a speculative future application.
+- **SRC-043 — childhood irritability:** small uncontrolled intervention with an explicit hedge and two symptom outcomes.
+- **SRC-044 — alcohol use among cancer survivors:** survey with a defined population and hazardous-drinking proportion.
+- **SRC-045 — childhood anxiety:** CBT study with a hedge about persistent brain activity.
+- **SRC-049 — physical activity and cancer risk:** cohort result with a 26% relative-risk comparison.
+- **SRC-050 — survivor exercise program:** before-and-after percentages and a specific 12-week program.
+- **SRC-052 — exercise patterns:** weekend-versus-regular exercise and a relative diabetes-risk figure.
+- **SRC-053 — gut microbes and exercise:** mouse experiment with a clear population boundary.
+- **SRC-055 — sleep regularity:** older cohort report with nearly twofold relative-risk wording.
+
+**CC papers (10):**
+
+- **SRC-003 — air pollution:** cohort with pollutant components and pregnancy outcomes.
+- **SRC-015 — smoking:** pooled cohort with a quantified risk association.
+- **SRC-016 — screen time:** model estimates that test whether readers preserve the simulation context.
+- **SRC-019 — fall risk:** dementia subgroup and absolute-risk ranges.
+- **SRC-025 — mental health policy:** conditional model result and uncertainty.
+- **SRC-026 — hypertension telehealth:** pilot randomized comparison of care modes.
+- **SRC-027 — heat exposure:** case-control estimate with a child population and uncertainty interval.
+- **SRC-031 — mental health services:** geographic surveillance and date-specific rates.
+- **SRC-033 — cognition:** trial follow-up with a hedged null result.
+- **SRC-040 — social connection:** older meta-analysis with a relative effect estimate.
+
+**Limitations.** NIA pages and its reuse FAQ returned HTTP 405 human-verification pages to a plain fetch, so none were included. Six separate study sites returned HTTP 403; the government source pages remained readable and linked to those studies. The government pages often summarize observational associations, pilot studies, or secondary analyses, and the CSV notes those boundaries. Human reviewers must approve the held-out/dev split and verify that each chosen finding is suitable for the intended posts.

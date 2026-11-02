@@ -903,3 +903,23 @@ Claude analysed D-006 as four questions plus one principle. Le Tuan accepted the
 3. **Imbalance.** 31/40 are research papers (30 from PLOS Medicine), whereas real hop-1 pages are mostly news-style (R1). → Prompt v1.1 adds a **SUPPLEMENT** run: 15 plain-language US government pages from ≥4 outlets, with request logging.
 
 The edits are documented in an addendum to `source_candidates.md`. Next: Codex runs the supplement; then the team approves `heldout` / `dev` / `reject`, aiming for roughly 10 government pages and 10 papers in the held-out set.
+
+### 2026-11-02 — Le Tuan (+ Codex, reviewed by Claude) — Source candidates supplement
+
+**Codex run.** SUPPLEMENT run with prompt v1.1, about 11 minutes. It appended `SRC-041`–`SRC-055`: 15 plain-language pages from NIMH, NCI, NIH Research Matters and NIAMS, all Tier A and text-only.
+- All supplement coverage targets were met.
+- 49 requests were logged. There was one pacing gap of 0.85 s: the same host was written with and without `:443`.
+- NIA pages returned human-verification pages and were skipped, as required.
+
+**Claude's independent check:**
+- The first 40 rows are byte-identical to the committed version.
+- All 55 quotes are verbatim in the cache.
+- There are no duplicate URLs.
+- The only flag was a keyword false positive: SRC-046 says "not a cure claim".
+- **Totals:** Tier A 24, Tier B 31, Tier C 0. Source types: 24 US-government pages, 31 CC papers.
+
+**Claude's caution.** SRC-046 (rTMS for depression, a 34% symptom improvement) is a treatment for a serious condition. A distorted post about it ("cures depression in 3 days") is exactly the kind of harmful text we chose to avoid writing. Recommendation: `reject`, or at most `dev`.
+
+**Next.**
+- The team fills `human_decision` and `approved_by`.
+- Codex suggests a balanced held-out shortlist of 10 government pages and 10 papers in `source_candidates.md`.
