@@ -1,8 +1,16 @@
 # Agent Prompt — Source Candidates for the Held-Out and Dev Sets
 
-**Version:** v1 (2026-11-01)
+**Version:** v1.1 (2026-11-02)
 **Works with:** Claude Code or Codex.
-**Decision context:** D-006 in `Journal.md` §2 and the evaluation protocol in §11.
+**Decision context:** D-006 and D-009 in `Journal.md` §2, and the evaluation protocol in §11.
+
+**Changes in v1.1:**
+- Tier A judges **text** rights separately from image rights (D-009).
+- New `study_link_basis=self` value.
+- Every request is now logged.
+- New **SUPPLEMENT** run mode (see the section of that name).
+
+> **Which run?** The initial 40-candidate run is done (`SRC-001`–`SRC-040`). Unless the human says otherwise, execute the **SUPPLEMENT** run.
 
 ## How to launch
 
@@ -11,13 +19,13 @@ From the repo root, send one of these.
 **Codex:**
 
 ```text
-Read prompts/source_candidates_agent.md and execute it. Runner initials: LT.
+Read prompts/source_candidates_agent.md and execute the SUPPLEMENT run. Runner initials: LT.
 ```
 
 **Claude Code** (pick the strongest model with `/model` first):
 
 ```text
-Pull the latest changes from GitHub, then read prompts/source_candidates_agent.md and execute it. Runner initials: TA.
+Pull the latest changes from GitHub, then read prompts/source_candidates_agent.md and execute the SUPPLEMENT run. Runner initials: TA.
 ```
 
 The person launching this may not be technical. Explain anything you need from them in short, plain sentences, in the language they write in.
@@ -69,9 +77,15 @@ Every candidate needs a rights basis, evidenced by a page you opened.
 
 | Tier | What qualifies | Evidence required | `demo_ok` |
 |---|---|---|---|
-| **A** | Text produced by the US federal government, e.g. CDC (incl. MMWR), NIH (incl. NIH Research Matters and institute news such as NIA or NHLBI), FDA, AHRQ, cancer.gov. | That site's own copyright, reuse or policy page saying the content is public domain or freely reusable, **and** no "used with permission" or third-party notice on the article itself. | `yes` |
+| **A** | Text produced by the US federal government, e.g. CDC (incl. MMWR), NIH (incl. NIH Research Matters and institute news such as NIA or NHLBI), FDA, AHRQ, cancer.gov. | That site's own copyright, reuse or policy page saying the content is public domain or freely reusable, **and** no "used with permission" or third-party notice on the article's **text**. See D-009. | `yes` |
 | **B** | An open-access paper whose article page states **CC BY** or **CC0**, e.g. PLOS, eLife, BMJ Open, JAMA Network Open, Scientific Reports, Nature Communications. | The licence statement on that article page. Journal-level claims are not enough. | `yes` |
 | **C** | A university or institute press release, including on EurekAlert!; a CC BY-NC paper; anything else whose rights are unclear. | Whatever terms you find. Write "rights unclear" if you find none. | `no` — internal evaluation only |
+
+**D-009: text vs images.**
+- Assess **text** rights only; we never reuse page images.
+- A third-party credit on an image (Shutterstock, Adobe Stock, etc.) does **not** demote the page's text from Tier A.
+- Say "text-only use; do not reuse images" in `notes`.
+- A third-party notice on the **text** (e.g. "reprinted with permission") still makes the page Tier C.
 
 **Target mix:** at least 24 of the 40 from Tier A or B; at most 8 from Tier C. Quote the rights evidence (≤ 30 words) in `rights_quote`.
 
@@ -97,7 +111,7 @@ Every candidate needs a rights basis, evidenced by a page you opened.
    - **Diversity:** no more than 3 candidates on the same narrow topic.
    - **Avoid** these, because a distorted post could cause real harm if it leaked: vaccine safety, abortion, firearms, elections, and claims that a treatment cures a serious disease.
 5. **Domain.** At least 32 of the 40 must be health, medicine, nutrition or public health. The rest may be other sciences.
-6. **Study link.** Record a link to the underlying study (DOI or journal URL) if the page shows one. It is helpful for provenance, but not required.
+6. **Study link.** Record a link to the underlying study (DOI or journal URL) if the page shows one. It is helpful for provenance, but not required. If the page **is** the study (e.g. a CC paper citing its own DOI), set `study_link=self` and `study_link_basis=self`.
 7. **Readable.** The page must be readable with a plain fetch (HTTP 200, main text ≥ 150 words). Record the status.
 8. **Not too new.** Exclude pages published within the last 14 days, since content may still change.
 
@@ -110,6 +124,10 @@ Every candidate needs a rights basis, evidenced by a page you opened.
   - Check that `finding_quote` is a substring of the cached text.
   - Set `quote_verified=true`.
   - If it fails, fix the quote or drop the candidate.
+- **Request logging (v1.1).**
+  - Append every HTTP request (URL, status, timestamp) to `data/sources/cache/fetch_log.jsonl`.
+  - Report the total in the `.md` file.
+  - Keep ≥ 1 s between requests to the same domain, including exploratory fetches.
 - **Resume support.** Append each finished candidate to the CSV immediately. If you are restarted, keep existing rows and continue numbering. If you hit a usage limit, tell the human plainly to resend the launch sentence later.
 
 ---
@@ -131,7 +149,7 @@ cand_id,url,final_url,http_status,title,publisher,source_type,rights_tier,rights
 | `rights_tier` | `A`, `B` or `C` |
 | `published_date` | `YYYY-MM-DD` (or `YYYY-MM`) |
 | `distortable_slots` | Slot names joined by `;` |
-| `study_link_basis` | `hyperlink`, `doi_in_text` or `none` |
+| `study_link_basis` | `hyperlink`, `doi_in_text`, `self` or `none` |
 | `found_by` | Runner initials + agent/model, e.g. `LT codex/<model>` |
 | `checked_at` | ISO 8601 UTC |
 | `human_decision`, `approved_by` | **Leave empty.** Humans fill these with `heldout`, `dev` or `reject`. |
@@ -153,6 +171,34 @@ A short report with:
 - **Limitations**, e.g. sites that blocked fetching, or rights you could not establish.
 
 ---
+
+## SUPPLEMENT run (v1.1)
+
+**Why.** The initial run returned 31 research papers (30 from PLOS Medicine) and 9 NIH pages. Real hop-1 pages are mostly news-style (R1), so the held-out set needs more **plain-language** sources.
+
+**What to do.**
+
+1. **Keep the existing 40 rows.** Never edit, re-number or delete them. Also keep the existing sections of the `.md` file.
+2. **Add exactly 15 new candidates**, `SRC-041` to `SRC-055`, appended to the same CSV. Every candidate must be:
+   - a **US federal government plain-language page**: `source_type=us_gov_page`, Tier A under D-009;
+   - written for the public: news-style summaries, research highlights, or consumer updates, **not** papers or technical reports.
+3. **Outlets.** Use **at least 4 different outlets**, e.g. NIH Research Matters, NIA news, NHLBI news, NCI Cancer Currents, CDC MMWR summaries ("What is already known / What is added"), FDA consumer updates, AHRQ.
+   - At most 6 from any single outlet.
+   - Do not repeat any URL already in the CSV.
+4. **Coverage across the 15:**
+   - ≥ 10 link to a separate underlying study (DOI or journal URL);
+   - ≥ 2 animal or in-vitro studies;
+   - ≥ 3 explicitly hedged findings;
+   - ≥ 3 reporting a range or a relative-risk number;
+   - ≥ 2 published more than 2 years ago.
+5. **Topics.** No more than 3 candidates on the same narrow topic across all 55, so check the existing rows first. Follow the same excluded topics as above.
+6. **Unchanged rules.** All hard rules, mechanics and quote verification apply as before.
+7. **Report.** Append a section `## Supplement run (v1.1)` to `data/sources/source_candidates.md` with:
+   - counts and coverage results for the 15;
+   - updated totals across all 55 (tier, source type, study type);
+   - the logged request count;
+   - a **revised suggested held-out shortlist of 20**, roughly 10 plain-language government pages and 10 papers, with one line each. It is a suggestion only.
+8. **Commit message**, if the human says yes: `Source candidates supplement (<initials>)`.
 
 ## Finish
 

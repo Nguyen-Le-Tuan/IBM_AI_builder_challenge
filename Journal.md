@@ -98,6 +98,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `SUPERSEDED by D-006` (2026-11-01). The run used a signed-in session, and Reddit's primary policy conflicts. |
 | D-007 | 2026-10-31 | **"Source found" definition (R1 and later datasets):** a verified sentence in hop 1 or the primary source that the post's claim can be compared against, **including a contradicting sentence**. A contradiction is a verdict, not a missing source. When several fetches exist, a row counts as found if any fetch retrieved such a sentence. | Le Tuan | `DECIDED` |
 | D-006 | 2026-11-01 | Response to the verified Reddit and X policy conflicts:<br>**(a)** Freeze the 29 Reddit pilot rows: kept to reproduce R1, never reused, never cited or shown publicly.<br>**(b)** Evaluation data:<br>• held-out = ~40 human-written posts grounded in ~20 low-rights sources (public-domain US government health pages, CC-BY papers, press releases), half faithful, labeled blind with adjudication;<br>• dev = agent-drafted, human-reviewed posts;<br>• external = SPICED (MIT), internal use only; Wührl et al. only after licence confirmation.<br>**(c)** Selection-first, platform-agnostic extension: no platform adapter in the MVP; the demo uses our own fixture feed plus a live "works anywhere" moment.<br>**(d)** D-005 is superseded; agents never browse social platforms.<br>**(e)** Process user-selected text transiently; store no post text. | Le Tuan (on Claude's recommendation) | `DECIDED` |
+| D-009 | 2026-11-02 | **Rights tiering assesses text and images separately.** We reuse only text. A third-party image credit does not demote a US federal page's text from Tier A. A third-party notice on the text itself still does. Applied to NIH SRC-005 to SRC-012 (C→A, text-only). | Le Tuan (on Claude's recommendation) | `DECIDED` |
 
 ---
 
@@ -882,3 +883,23 @@ Claude analysed D-006 as four questions plus one principle. Le Tuan accepted the
 - **Topics to avoid:** vaccine safety, abortion, firearms, elections, cure claims for serious disease. A distorted post on these could cause harm if leaked.
 - **The agent must not write posts or example distortions.** Held-out posts must be human-written (D-006).
 - Every finding quote is verified by code. `data/sources/cache/` is gitignored.
+
+### 2026-11-02 — Le Tuan (+ Codex, reviewed by Claude) — Source candidates run 1 and D-009
+
+**Codex run.** `prompts/source_candidates_agent.md` v1, runner LT, about 19 minutes. Output: `data/sources/source_candidates.csv` and `.md`, with 40 candidates.
+- All 6 coverage targets were met.
+- **Deviations:** no request count was logged, and some exploratory fetches were spaced under 1 s.
+
+**Claude's independent check.** 0 problems:
+- every quote is verbatim in the cache and ≤40 words;
+- all statuses are 200;
+- the human columns are empty;
+- no excluded topics;
+- no pages published in the last 14 days.
+
+**Issues found, and decisions:**
+1. **Rights tiering.** The v1 prompt demoted 8 NIH pages to Tier C because of stock-photo credits. The NIH FAQ restriction applies to images, and the text is public domain. → **D-009:** these pages become Tier A for text-only use. Tiers are now A 9, B 31, C 0.
+2. **Self-referencing study links.** CC papers used their own DOI as `study_link`. Those rows now read `self`.
+3. **Imbalance.** 31/40 are research papers (30 from PLOS Medicine), whereas real hop-1 pages are mostly news-style (R1). → Prompt v1.1 adds a **SUPPLEMENT** run: 15 plain-language US government pages from ≥4 outlets, with request logging.
+
+The edits are documented in an addendum to `source_candidates.md`. Next: Codex runs the supplement; then the team approves `heldout` / `dev` / `reject`, aiming for roughly 10 government pages and 10 papers in the held-out set.
