@@ -869,3 +869,16 @@ Claude analysed D-006 as four questions plus one principle. Le Tuan accepted the
 - §1 rows: platform/interaction, evaluation data, pilot data, data handling.
 - §8 platform section, §9 diagram label, §11 evaluation protocol, §12 W2 and §14 open questions updated.
 - New next decision: **D-008**, where hop 1 is fetched.
+
+### 2026-11-01 — Le Tuan (+ Claude) — Source-candidate prompt
+
+- **Created** `prompts/source_candidates_agent.md` (v1). An agent finds **40** candidate pages for the held-out and dev sets; humans then mark each one `heldout`, `dev` or `reject`.
+- **Rights tiers:**
+  - **A** — US federal government text, evidenced by the site's own policy page;
+  - **B** — CC BY or CC0, evidenced on the article page itself;
+  - **C** — press releases and unclear rights; internal use only, `demo_ok=no`.
+  - Target: ≥24 of the 40 from Tier A+B, ≤8 from Tier C.
+- **Coverage targets:** ≥5 animal/in-vitro studies, ≥5 ranges or relative risks, ≥5 hedged findings, ≥4 older than 2 years, ≥32 health topics.
+- **Topics to avoid:** vaccine safety, abortion, firearms, elections, cure claims for serious disease. A distorted post on these could cause harm if leaked.
+- **The agent must not write posts or example distortions.** Held-out posts must be human-written (D-006).
+- Every finding quote is verified by code. `data/sources/cache/` is gitignored.
