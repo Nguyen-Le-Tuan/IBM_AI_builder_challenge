@@ -978,3 +978,12 @@ LT delegated the source split to Claude, with LT overseeing (D-010).
 - Humans write the posts.
 - Claude writes mechanical prompts for validation, blind packets and agreement statistics.
 - The team answers guideline §11 before labeling.
+
+### 2026-11-09 — Le Tuan (+ Claude) — Team README
+
+- **Replaced** the placeholder `README.md` (Lok Sang's "# hello") with a short team README:
+  - Inspiration, What it does, How we built this, Challenges we ran into;
+  - MVP scope, repo map, open questions, working rules;
+  - the **4-week plan from Nov 5**, with a "you are here" marker at W1.
+- **Living document:** the README is meant to evolve as we build.
+- **No pilot data:** it cites no Reddit pilot numbers (D-006). Its challenges are stated in general terms.
