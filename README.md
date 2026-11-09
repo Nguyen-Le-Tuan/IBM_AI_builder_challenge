@@ -1,3 +1,5 @@
+<p align="center"><img src="assets/hero-banner.png" width="100%" alt="Inline Evidence Highlights: a social post with an amber highlight on the word 'prevents' and a hover card comparing the post's wording with the source's wording"></p>
+
 # Inline Evidence Highlights
 
 A browser extension that shows **exactly where** a social post differs from the source it cites, with the evidence one hover away.
@@ -100,6 +102,7 @@ Every highlight colour comes with an icon and a text label. We show no "% true" 
 | [`data/sources/`](data/sources/) | 55 vetted source pages (20 held-out, 32 dev, 3 reject) |
 | [`data/heldout/`](data/heldout/) | **Held-out writing guide, assignments and templates — start here if you are writing posts** |
 | [`prompts/`](prompts/) | Agent prompts (versioned) |
+| [`assets/`](assets/) | Logo (`logo.svg`), Discord icon (`discord-icon-512.png`), hero banner. Regenerate with `python3 tools/assets/render_assets.py` |
 | `data/r1/` | Closed pilot, frozen. Do not reuse (D-006) |
 
 ---

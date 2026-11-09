@@ -987,3 +987,18 @@ LT delegated the source split to Claude, with LT overseeing (D-010).
   - the **4-week plan from Nov 5**, with a "you are here" marker at W1.
 - **Living document:** the README is meant to evolve as we build.
 - **No pilot data:** it cites no Reddit pilot numbers (D-006). Its challenges are stated in general terms.
+
+### 2026-11-09 — Le Tuan (+ Claude) — Logo, Discord icon and hero banner
+
+**Created in `assets/`:**
+- `logo.svg`: vector source. A post card with an amber highlight bar and a lavender "≠" evidence bubble on navy.
+- `discord-icon-512.png` and `logo-1024.png`.
+- `hero-banner.png` (2560×820).
+
+**Style:** flat colours, no gradients, using the five label colours.
+
+**Banner content:** a fictional (MOCK) post, "Coffee prevents Alzheimer's, new study shows", with a hover card comparing "prevents" with "was associated with a lower incidence of".
+
+**Rendering.** All PNGs come from `tools/assets/render_assets.py` (Pillow + Noto Sans). Headless Brave hung in this environment, so the renderer draws everything directly.
+
+**README** now opens with the hero banner and lists `assets/` in the repo map.
