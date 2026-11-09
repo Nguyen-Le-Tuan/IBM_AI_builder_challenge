@@ -45,7 +45,11 @@ This file tracks what the team still has to do. The reasoning behind each task l
 | [x] | Run the source-candidate agent (`prompts/source_candidates_agent.md`) → 40 candidates in `data/sources/source_candidates.csv` | LT (Codex) | Done 2026-11-02; Claude found 0 problems. NIH re-tiered to A (D-009) |
 | [x] | Run the SUPPLEMENT run (prompt v1.1) → 15 plain-language US government pages (`SRC-041`–`SRC-055`) | LT (Codex) | Done 2026-11-02; Claude found 0 problems. Totals: 24 gov pages + 31 papers |
 | [x] | Approve sources: fill `human_decision` (`heldout` / `dev` / `reject`) and `approved_by`; ~20 held-out (~10 government pages + ~10 papers) | Claude (LT-delegated, D-010) | Done 2026-11-02: 20 heldout / 32 dev / 3 reject. Rationale in `data/sources/source_candidates.md`. LS/TA may object |
-| [ ] | **Write held-out posts by hand:** for each approved source, 1 faithful + 1 distorted post, recording the intended spans and types (~13–14 posts each) | LT, LS, TA | Must be human-written, not LLM-written (D-006). Follow `docs/labeling_guideline_v0.md`. Blind labeling and adjudication follow |
+| [ ] | **Write held-out posts by hand** (LT): 7 sources → 14 posts in `data/heldout/posts_LT.csv` + `findings_LT.csv` | LT | Guide: `data/heldout/README.md`; sources in `assignments.csv`. No AI tools (D-006) |
+| [ ] | **Write held-out posts by hand** (LS): 7 sources → 14 posts in `posts_LS.csv` + `findings_LS.csv` | LS | Same guide |
+| [ ] | **Write held-out posts by hand** (TA): 6 sources → 12 posts in `posts_TA.csv` + `findings_TA.csv` | TA | Same guide |
+| [ ] | Answer guideline v0 §11 open questions before blind labeling | ALL | Writing can start before this |
+| [ ] | Agent prompts: held-out validation + blind packets + agreement stats | Claude | Mechanical only; never writes posts or labels |
 | [ ] | Decide D-008: where hop 1 is fetched (backend vs user's browser vs open article tab) | ALL | Next design decision. Journal §14 |
 | [x] | ~~(Optional) Human seeds from X or Facebook~~ | — | Cancelled 2026-11-01 by D-006: R1 is closed and no social-platform collection |
 | [x] | **R1 step 3a:** run the cross-model audit in Claude Code with the strongest model: `prompts/r1_crossmodel_audit.md` (all 29 rows) | TA | Done 2026-10-31 (commit 510c640). Output: `data/r1/audit_xm_TA.csv` and `.md` |

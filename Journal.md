@@ -942,3 +942,39 @@ LT delegated the source split to Claude, with LT overseeing (D-010).
 **Records:** the rationale for every held-out pick is in the "Source selection" section of `data/sources/source_candidates.md`.
 
 **Note:** Claude's own attempt to edit `CLAUDE.md` was blocked by the session's permission guard. That is intended: rules that bind agents are edited by humans. LT then edited `CLAUDE.md` personally, so agents may fill human or audit columns only under an explicit, logged delegation. Held-out posts, held-out gold labels, and audits of an agent's own output are **never** delegated.
+
+### 2026-11-02 — Le Tuan (+ Claude) — Held-out writing guide and assignments
+
+**Created:**
+- `data/heldout/README.md` (writing guide v0);
+- `assignments.csv`;
+- `posts_template.csv` and `findings_template.csv`.
+
+**Assignments.** Each writer has a mix of government pages and papers:
+
+| Writer | Sources | Gov + papers | Posts | Labeled by | Adjudicated by |
+|---|---|---|---|---|---|
+| LT | SRC-004, 009, 012, 049, 015, 027, 033 | 4 + 3 | 14 | LS | TA |
+| LS | SRC-005, 044, 054, 003, 019, 025, 029 | 3 + 4 | 14 | TA | LT |
+| TA | SRC-007, 052, 055, 026, 031, 040 | 3 + 3 | 12 | LT | LS |
+
+**Per source:** 1 faithful post (a hard negative, paraphrased) and 1 distorted post (1–2 deliberate differences).
+
+**Suggested primary types across the 20 distorted posts** (Claude planned the *types* only, never the wording; writers may change them):
+
+| Colour | Types |
+|---|---|
+| Amber | causality 3, certainty 3, scope 2, population_omitted 2, quantity_altered 2, condition_omitted 1 (+ secondary suggestions) |
+| Coral | quantity, population, direction, fact — 1 each |
+| Lavender | stale_presented_as_new 2 |
+| Slate | not_in_source 1 |
+
+**Integrity rules:**
+- No AI tools for writing or editing posts.
+- Labelers work only from agent-made blind packets.
+- Faithful posts have no findings rows.
+
+**Next:**
+- Humans write the posts.
+- Claude writes mechanical prompts for validation, blind packets and agreement statistics.
+- The team answers guideline §11 before labeling.
