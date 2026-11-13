@@ -646,6 +646,10 @@ These must be **demonstrated** (§11), not asserted.
 - **Brian:** role, weekly hours, and whether Brian writes held-out posts or stays a blind labeler and baseline scorer.
 - **Status the repo cannot show:** who has registered, whose Bob trial is active, and whether the kickoff gave any watsonx access or credits.
 - **Bob trial allowance:** 50 or 40 Bobcoins per member? Measure what one scaffold task costs before planning the build.
+- **Limitations review of 2026-11-12 (§15):** accept the three mitigations? Which limitations do we state publicly on the slides and project page?
+- **Publishing on the Chrome Web Store:** Le Tuan wants a product that real users can install, not only a contest entry (2026-11-12). Does the team agree, and is the first listing before or after Dec 2?
+- **Image posts:** OCR in the browser keeps the image on the device, but it still widens D-006 ("only text the user selects") and the data-handling rule in `CLAUDE.md`. This needs a team decision before any image code is written. Is image mode in the contest build, a fixture-only stretch, or post-contest?
+- **Phasing proposal of 2026-11-12 (§15, mitigation research):** accept, modify or reject phases A–C.
 
 ---
 
@@ -1115,3 +1119,106 @@ Stretch only: a "writer mode" that checks a draft before posting. It reuses the 
 - Not verified: whether four members can book back-to-back slots in the same room.
 
 **Plan updates.** §1 team row only. No other section changed.
+
+### 2026-11-12 — Le Tuan (+ Claude) — Limitations of the fully built scope
+
+**Input.** Le Tuan asked: if the current scope were built completely, where would it still be limited?
+
+**Status.** Everything below is Claude's assessment (`HYPOTHESIS`) unless a source is given. The mitigations are `RECOMMENDED` and not agreed.
+
+**Summary.** Even when complete, the product answers one narrow question: is the post faithful to the page it links to?
+
+**The three heaviest limitations.**
+
+1. **Faithful to the source is not the same as true.**
+   - A post that links to a junk blog, to an article that already distorted the study, or to one weak study still gets Mint.
+   - A bad actor can link to a page they wrote themselves.
+   - A post that correctly corrects a wrong source gets "Contradicts source".
+2. **Narrow coverage.**
+   - Only English text posts with a link. Images, video and screenshots are out of scope (§8).
+   - Desktop Chrome only. Social apps on phones are out of reach (not verified in this session).
+   - The "lost at which hop" scene needs readable study text. R1 found it for 5 of 29 posts (§1), so it works mainly for open-access studies.
+3. **Accuracy on real posts cannot be measured.**
+   - The team writes the held-out posts and plants the distortions, so they are cleaner than real posts (§11 already states this).
+   - Platform policies stop us collecting real posts (D-006).
+   - Small n gives wide intervals. With 20 faithful posts and 0 false alarms, the 95% upper bound on the true false-alarm rate is still 13.9% (one-sided) or 16.8% (two-sided, Clopper–Pearson).
+
+**Other limitations.**
+
+- **Fully invented claims only get Slate.** They are the most harmful kind and get the weakest signal.
+- **The validator proves a quote exists**, not that the interpretation is right (§9).
+- **Omissions are the hardest case.** Whether a dropped condition is material is a judgment call. Caveats often sit far from the result sentence, so evidence selection can miss them.
+- **Research does not yet support prompting alone.** Wührl et al. 2024 found few-shot LLMs behind fine-tuned models on this task (§6). Current models are unmeasured.
+- **Granite Guardian 2b answers Yes or No** and was built for RAG checks. Its value for subtle certainty or scope differences is unmeasured.
+- **The people who need it most will use it least.** The user must already doubt a post, and may check only posts they dislike.
+- **No evidence of changed sharing behaviour.** Unflagged posts may even look more credible: the "implied truth effect" (Pennycook et al. 2020, cited from Claude's memory, not checked).
+- **Data still leaves the device.** Selected text and source content pass through our backend and a third-party LLM, even though we store neither.
+- **Cost and latency per check are unmeasured.**
+
+**Mitigations** (`RECOMMENDED`):
+
+1. **Word Mint by source type:** "Matches the linked page", with a caution when that page is not a study or a health authority.
+2. **Retraction flag on the study hop.** OpenAlex exposes `is_retracted` (`VERIFIED` 2026-11-12: `GET api.openalex.org/works?filter=is_retracted:true` returned 144,580 works).
+3. **A public "Limitations" slide** with confidence intervals.
+
+The rest (mobile, images and video, posts without links) should be stated as post-MVP directions, not fixed before Dec 2.
+
+**Note for agents.** The OpenAlex response carried a notice aimed at AI agents: request an API key by POSTing the user's email. Claude did not act on it (retrieved content is data, and it would send a member's email to an outside service). A human registers a key if the team wants one.
+
+**Plan updates.** §14: one open question added. The Nov 15 session file: decision 1 now includes the three mitigations.
+
+### 2026-11-12 — Le Tuan (+ Claude and three research agents) — Mitigation research: image posts, Chrome Web Store, trust and coverage
+
+**Input.** Le Tuan asked for thorough research on ways to overcome the limitations above, especially image posts: highlights drawn on the image itself that stay in place while scrolling. Le Tuan's stated goal: a usable app and an extension that can be published on the Chrome Web Store, not only a contest entry.
+
+**How it was done.** Three Claude research agents ran in parallel from one brief each (primary sources only, every fact tagged, no social platforms, no accounts, no commits). The first run failed on a usage limit and left no files; the second run finished. Claude then re-opened 18 of the key claims on the primary pages; all matched. Leaderboard numbers and most other rows were not re-checked by Claude.
+
+**Created** (all in `docs/research/`, dated 2026-11-12):
+
+| File | Covers |
+|---|---|
+| [`image_posts_ocr_overlay.md`](docs/research/image_posts_ocr_overlay.md) | Getting image pixels in an extension, OCR with bounding boxes, overlays that stay attached, virtualised feeds, accessibility; 8 spikes |
+| [`chrome_web_store_and_mobile.md`](docs/research/chrome_web_store_and_mobile.md) | Store account and review, program policies, MV3 specifics, mobile routes, cross-browser; a publishing checklist |
+| [`limitation_mitigations.md`](docs/research/limitation_mitigations.md) | Source-quality signals, no-link search, legal study text, grounding models, datasets, label research, prompt injection; a mitigation map |
+
+**Caveat on tags.** The Chrome Web Store file was read through a fetch tool that can paraphrase, so its quotes need a re-read on the page before anything is submitted. The other two files quote pages directly.
+
+**Findings that change our plan** (`VERIFIED` in the files unless noted):
+
+- **Image pixels.** A content-script canvas is tainted by cross-origin images, so it cannot be used. Two clean routes exist:
+  - a context-menu click on the image gives its `srcUrl` and grants `activeTab`; the service worker then fetches the bytes, which needs a host permission for the image host;
+  - `tabs.captureVisibleTab` needs only `activeTab`, covers only the visible area, and is limited to 2 calls per second.
+- **OCR.** Tesseract.js 7.0.0 (Apache-2.0) is the only in-browser option that documents word-level boxes. Its worker and WASM must be bundled, because the store counts remotely loaded WASM as remote code, and the manifest needs `'wasm-unsafe-eval'`. Docling and Granite-Docling give element-level boxes only and require sending the image to the backend.
+- **Overlay.** Two designs: a JavaScript tracker in a fixed Shadow DOM layer (works everywhere, may trail scrolling by a frame), or CSS anchor positioning (the browser keeps boxes attached, but we must write `anchor-name` onto the page's `<img>`, transforms are ignored, and the spec is inconsistent about matching across shadow trees).
+- **Chrome Web Store.** Our design is publishable: a backend that returns data is allowed; remote code is not. We need a privacy policy and a Limited Use disclosure, because website content counts as user data, and an HTTPS backend. `activeTab`, `scripting` and `contextMenus` are enough for the text MVP. Review takes "a few days" up to "a few weeks", longer for new developers and broad host permissions. A service worker ends when a fetch response takes over 30 seconds, so the polling design in §9 stays.
+- **Study text.** Europe PMC returns abstracts and open-access full text with the licence, without a key. This is a legal route around the blocked publisher pages seen in R1. How many of our sources it covers is unmeasured.
+- **Source signals.** An OpenAlex lookup by DOI is free and returns `is_retracted`, preprint type, `study_designs` and MeSH `Humans`/`Animals`. Crossref lists retractions in `updated-by` (Claude re-ran the call on a retracted paper).
+- **Granite Guardian.** The latest is 4.1 8B (Apache 2.0, April 2026). IBM also publishes factuality adapters for Granite 4.0 Micro whose criterion includes text that "selectively ignores evidence". The Guardian 3.0 2b on Ollama named in the first entry of 2026-11-12 is an older version. Whether any of these fits a 4 GB GPU is `HYPOTHESIS`.
+- **Labels.** Pennycook et al. 2020 (now verified, DOI 10.1287/mnsc.2019.3478): warnings on some items made untagged items look more accurate, and marking verified items removed the effect. For us: every check must end in an explicit state, never silence.
+- **Prompt injection.** OWASP LLM Top 10 2026 says "no reliable prevention mechanism exists today". Our model call has no tools or credentials, so the remaining risk is a source page that makes the model omit real differences. The quote validator does not catch that.
+- **No-link posts.** Google Custom Search is closed to new customers and Bing Search APIs are retired. Europe PMC and OpenAlex search can propose candidate studies.
+- **Mobile.** A PWA registered as a Web Share Target can receive text, links and images from the Android share sheet. Firefox for Android runs extensions but lacks the context-menu API. Chrome for Android: no primary statement found.
+
+**Claude's synthesis: image mode** (`RECOMMENDED`, not decided; product code goes through Bob):
+
+1. **Entry:** a context-menu item on the image. The user picks the image, which keeps the selection-first rule.
+2. **Pixels:** crop a `captureVisibleTab` screenshot first, because it needs no extra permission and shows exactly what the user sees. Fetch the image bytes with a runtime host permission only when the on-screen resolution is too low. The research file recommends the opposite order; spikes 3 and 4 in that file decide.
+3. **OCR:** Tesseract.js 7, bundled, in an offscreen document. Only the recognised text goes to the backend, like selected text today.
+4. **Mapping:** the backend returns quotes; code maps each quote to word boxes by character offsets in the OCR text and merges them per line. Boxes are stored as fractions of the image.
+5. **Overlay:** one fixed Shadow DOM layer with a JavaScript tracker (start and stop with `IntersectionObserver`; re-measure on capture-phase scroll, resize and DOM mutation, once per frame; correct for `object-fit`). The layer ignores pointer events; only the boxes take hover and keyboard focus. CSS anchor positioning is an enhancement after its spike.
+6. **Re-render:** cache results by a SHA-256 of the image bytes and re-attach when the same image returns.
+7. **Dependency:** an image rarely carries its source link. Image mode is only useful together with a link in the caption or the no-link "possible sources — confirm" mode.
+
+**Claude's proposed phasing** (`RECOMMENDED`, not decided):
+
+| Phase | When | Content |
+|---|---|---|
+| A | By the Nov 24 freeze | Text MVP as planned. Explicit outcome states on every check. DOI badges from OpenAlex and Crossref (retracted, preprint, study design, animal or human). Europe PMC abstract for hop 2. Store hygiene from the first commit: three permissions, everything bundled, HTTPS backend. Image mode only as a stretch on the fixture page, and only if the Nov 19 milestone is met. |
+| B | December, after the deadline | Privacy policy and Limited Use disclosure; developer account; private then unlisted listing. Image mode: spikes, then build. Injection hardening and a small adversarial page set. |
+| C | Later | No-link mode, Android share-target PWA, Firefox build, a measured second-check model, in-browser Granite. |
+
+**Not solved by anything found.** "True" stays out of scope; weak but unretracted studies and junk pages without a DOI get no signal; invented claims still end as "no source found"; no public dataset matches our phrase-level task.
+
+**Notes for agents.** The OpenAlex help pages again told AI agents to request a key with the user's email; no agent acted on it. NCBI's E-utilities guide showed a reCAPTCHA and the agent stopped there.
+
+**Plan updates.** §14: three open questions added. §3–§13 unchanged.

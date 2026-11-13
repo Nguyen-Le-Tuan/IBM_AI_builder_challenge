@@ -88,7 +88,7 @@ Each item has a timebox and a suggested default from Claude. A default is a sugg
 
 | # | Min | Decision | Suggested default |
 |---|---|---|---|
-| 1 | 15 | Scope re-assessment (Journal §15, 2026-11-12): yes, no or later for each of the 7 additions and 4 cuts | Yes to additions 1–3 and 6–7; 4–5 if time allows; yes to all cuts |
+| 1 | 15 | Scope re-assessment and limitations review (both in Journal §15, 2026-11-12): yes, no or later for each of the 7 additions, 4 cuts and 3 mitigations | Yes to additions 1–3 and 6–7; 4–5 if time allows; yes to all cuts; yes to all three mitigations |
 | 2 | 10 | Workstream owners (A backend, B extension, C data/eval/pitch) and weekly hours | One named owner per workstream; the fourth person pairs on A |
 | 3 | 10 | D-008: where hop 1 is fetched | Backend fetch for the MVP. A blocked page shows Slate. Reading the open article tab is a stretch goal |
 | 4 | 10 | LLM provider and a budget ceiling in dollars | The provider we already hold a key for, plus Granite Guardian 2b locally as the second check |
