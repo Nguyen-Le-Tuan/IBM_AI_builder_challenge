@@ -1256,3 +1256,19 @@ The rest (mobile, images and video, posts without links) should be stated as pos
 **Slip to note.** The 2026-11-12 entry proposed "owners assigned" by Nov 13. Owners will be assigned on Nov 15 at the earliest.
 
 **Plan updates.** §14: one open question added. `docs/meetings/2026-11-15_silverman_worksession.md`: decision 2 default updated and a "Proposed way of working" section added. §1–§13 unchanged.
+
+### 2026-11-13 — Le Tuan (+ Claude) — IBM Bob: IDE or terminal
+
+**Request.** Le Tuan asked what Bob is, how to use it, how it compares with Claude Code, and whether to use the terminal or the GUI, then asked for the findings to be recorded.
+
+**Verified today** (IBM Bob docs fetched 2026-11-13; Bob was not installed or run). Details and links are in the addendum to `docs/research/ibm_bob.md`.
+- Bob IDE installs on Linux (Debian, Red Hat and Fedora options). It needs at least 4 GB RAM and an IBMid.
+- Built-in modes are Agent, Plan and Ask. Plan mode edits only Markdown and text files.
+- Bob Shell installs on Linux by script or the npm package `@ibm/bob`. It has interactive and non-interactive sessions and can sign in with an API key for automation.
+- Bob Shell has `/export <json|markdown>` for the current task. No full export was found for the IDE (2026-10-31). Its built-in command list has no `/review` and no rollback.
+
+**Not verified.** Whether the IDE and the Shell share one Bobcoin balance.
+
+**Recommendation** (`RECOMMENDED`, not decided). Use Bob IDE as the main tool: it records well for the "how you used IBM Bob" section, and rollback, `/review` and the Bobcoin display are documented there. Test Bob Shell briefly for `/export` as a source for `BOB_LOG.md`.
+
+**Plan updates.** `docs/research/ibm_bob.md`: addendum added. §1–§14 unchanged.
