@@ -1,7 +1,7 @@
 # Project Journal — Inline Evidence Highlights
 
 **IBM AI Builders Challenge — North America 2026**
-Team: **Le Tuan**, **Lok Sang**, **Truyen Anh**
+Team: **Le Tuan**, **Lok Sang**, **Truyen Anh**, **Brian** (joined 2026-11-12, D-011)
 
 This file is the team's shared source of truth. Humans and each member's Claude sessions should use it to see what was discussed, what was decided, and what is still open. Read §0–§2 before doing anything else, then check [`HUMAN_TODO.md`](HUMAN_TODO.md) for current progress.
 
@@ -57,7 +57,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 
 | Item | Status | Value / notes |
 |---|---|---|
-| Team | `DECIDED` 2026-10-31 (Le Tuan) | Le Tuan, Lok Sang, Truyen Anh. Roles are `OPEN` (see §12.1). |
+| Team | `DECIDED` 2026-11-12 (Le Tuan, D-011) | Le Tuan, Lok Sang, Truyen Anh, **Brian** (4 of the 5 allowed). Roles are `OPEN` (see §12.1). Le Tuan reported on 2026-11-12 that Brian has finished onboarding; the items were not listed one by one, so the Nov 15 roll call confirms registration, certificate, eligibility and Bob trial for all four members. |
 | MVP domain | `DECIDED` 2026-10-31 (Le Tuan) | Social posts that cite a **scientific/health finding**. Scholarship/job ads move to v2. |
 | Human vs agent work split | `DECIDED` 2026-10-31 (team) | Agents (Claude Code / Codex) do automatable work from detailed prompts in `prompts/`. Humans do sampling decisions, credentials, audits and held-out gold labels (D-004). Agents never browse or call the APIs of social platforms; the D-005 exception is retired (D-006). |
 | Core framing | `RECOMMENDED` (endorsed) | Claim-to-source **diff**, not truth classification (§5). |
@@ -84,6 +84,9 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | Deployment | `OPEN` | Single small backend container. Host not chosen. |
 | Eligibility (F-1) | `OPEN` | Le Tuan is emailing BeMyApp (drafted 2026-10-31). Each member must confirm their own eligibility. |
 | Product code before Bob access | `RECOMMENDED` | Do not write any (see §3). |
+| Build progress | `VERIFIED` 2026-11-12 (repo at 31058d8) | **No product code yet.** No `backend/`, `extension/` or `BOB_LOG.md`. Held-out posts written: 0 of ~40. The W1 pipeline slice and the R2 gate (§12) have not run. Feature freeze is still planned for Nov 24. |
+| Scope re-assessment | `RECOMMENDED` 2026-11-12 (Claude) | Keep the direction. Commit to an IBM stack, move the "lost at which hop" scene and an evidence note into the demo's critical path, and slim the evaluation. **Not agreed by the team.** Full proposal in §15 (2026-11-12). |
+| Bob trial allowance | `OPEN` | The pricing page said 50 Bobcoins (§3, read 2026-10-31). The event page says "Get 40 Bobcoins for 30 days" (read 2026-11-12). Check the number in a real account. |
 
 ---
 
@@ -92,7 +95,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | ID | Date | Decision | By | Status |
 |---|---|---|---|---|
 | D-001 | 2026-10-31 | MVP domain = scientific/health findings cited in social posts | Le Tuan | `DECIDED` |
-| D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `DECIDED` |
+| D-002 | 2026-10-31 | Team = Le Tuan, Lok Sang, Truyen Anh | Le Tuan | `SUPERSEDED by D-011` (2026-11-12) |
 | D-003 | 2026-10-31 | `Journal.md` is the shared source of truth; `HUMAN_TODO.md` tracks progress | Le Tuan | `DECIDED` |
 | D-004 | 2026-10-31 | Delegate automatable work (fetching, link-following, metadata lookup, quote extraction, normalization, metrics, reports) to coding agents via detailed prompts in `prompts/`. Humans do only: actions on social platforms (terms), sampling decisions, credential setup, audits of agent output, and gold labels. Dev labels may be agent-pre-annotated and human-corrected; held-out labels must be human and independent of model output. | Team (Le Tuan, Lok Sang, Truyen Anh) | `DECIDED`. The "humans capture social posts" clause is superseded by D-005 for Reddit only. |
 | D-005 | 2026-10-31 | Codex with computer use may capture R1 seeds from **public Reddit pages, logged out and read only**, through `prompts/phase0_codex_agent.md` with `ALLOW_SOCIAL_BROWSING=reddit-logged-out`. Constraints: a fixed sampling frame, ≤150 page loads, no CAPTCHA or bot-check workarounds, no use of personal accounts. Le Tuan accepts the platform-terms risk that Claude flagged: Reddit's terms reportedly restrict automated access whatever the interface. Verifying this on Reddit's own pages is Codex task T1. API access to social platforms stays forbidden. | Le Tuan (teammates to confirm) | `SUPERSEDED by D-006` (2026-11-01). The run used a signed-in session, and Reddit's primary policy conflicts. |
@@ -100,6 +103,7 @@ On 2026-10-31, Le Tuan endorsed the overall plan in §5–§12 as the working di
 | D-006 | 2026-11-01 | Response to the verified Reddit and X policy conflicts:<br>**(a)** Freeze the 29 Reddit pilot rows: kept to reproduce R1, never reused, never cited or shown publicly.<br>**(b)** Evaluation data:<br>• held-out = ~40 human-written posts grounded in ~20 low-rights sources (public-domain US government health pages, CC-BY papers, press releases), half faithful, labeled blind with adjudication;<br>• dev = agent-drafted, human-reviewed posts;<br>• external = SPICED (MIT), internal use only; Wührl et al. only after licence confirmation.<br>**(c)** Selection-first, platform-agnostic extension: no platform adapter in the MVP; the demo uses our own fixture feed plus a live "works anywhere" moment.<br>**(d)** D-005 is superseded; agents never browse social platforms.<br>**(e)** Process user-selected text transiently; store no post text. | Le Tuan (on Claude's recommendation) | `DECIDED` |
 | D-009 | 2026-11-02 | **Rights tiering assesses text and images separately.** We reuse only text. A third-party image credit does not demote a US federal page's text from Tier A. A third-party notice on the text itself still does. Applied to NIH SRC-005 to SRC-012 (C→A, text-only). | Le Tuan (on Claude's recommendation) | `DECIDED` |
 | D-010 | 2026-11-02 | **Source selection delegated to Claude.** LT delegated filling `human_decision` for the 55 source candidates to Claude, under LT's oversight; `approved_by` records the delegation. Held-out **posts** and gold labels stay human-written (D-006). Teammates may object; that would be recorded as a new decision. | Le Tuan | `DECIDED` |
+| D-011 | 2026-11-12 | **Team = Le Tuan, Lok Sang, Truyen Anh, Brian.** Brian joins as the fourth member (the rules allow 1–5). Brian must register individually, earn the SkillsBuild certificate and confirm their own eligibility (§3). Brian's full name, role and weekly hours are `OPEN`. | Le Tuan (reported to Claude; teammates to confirm) | `DECIDED` |
 
 ---
 
@@ -638,6 +642,10 @@ These must be **demonstrated** (§11), not asserted.
 - Is work done before Nov 2 (manual dataset, documents) acceptable? We believe yes since it is not code, but it is not addressed in the rules. We may ask the organizers.
 - Real posts from an open platform (e.g. Bluesky) for qualitative checks? Its developer guidelines require honouring deletions, and a 2024 Bluesky dataset drew strong community backlash (secondary sources). This is not planned; it would need its own decision.
 - Platform-specific one-click adapters after the MVP: needs a policy review per platform.
+- **Scope re-assessment of 2026-11-12 (§15):** accept, modify or reject each item. Shrinking the held-out set below ~40 would change D-006 (b) and needs its own decision.
+- **Brian:** role, weekly hours, and whether Brian writes held-out posts or stays a blind labeler and baseline scorer.
+- **Status the repo cannot show:** who has registered, whose Bob trial is active, and whether the kickoff gave any watsonx access or credits.
+- **Bob trial allowance:** 50 or 40 Bobcoins per member? Measure what one scaffold task costs before planning the build.
 
 ---
 
@@ -1002,3 +1010,108 @@ LT delegated the source split to Claude, with LT overseeing (D-010).
 **Rendering.** All PNGs come from `tools/assets/render_assets.py` (Pillow + Noto Sans). Headless Brave hung in this environment, so the renderer draws everything directly.
 
 **README** now opens with the hero banner and lists `assets/` in the repo map.
+
+### 2026-11-12 — Le Tuan (+ Claude) — Fourth member (D-011) and scope re-assessment
+
+**Input.** Le Tuan reported that **Brian** has joined the team, and asked Claude to re-assess the scope from a judge's point of view: feasibility, importance, practicality and "wow".
+
+**Recorded as decided.** D-011: the team is now four people. Everything else in this entry is `RECOMMENDED` or `HYPOTHESIS` until the team agrees.
+
+**Repo state** (`VERIFIED` 2026-11-12, at commit 31058d8):
+- There is no `backend/`, no `extension/` and no `BOB_LOG.md`.
+- `data/heldout/` holds only the guide, the assignments and the two templates: 0 of ~40 posts are written.
+- The last commit (Nov 9) added the logo and banner. The W1 pipeline slice and the R2 gate have not run.
+- Still `OPEN`: workstream owners, LLM provider, API budget, D-008.
+- 12 days remain until the planned feature freeze (Nov 24), and 20 until the deadline.
+
+**Web facts** (`VERIFIED` 2026-11-12, primary pages fetched):
+- [Ollama `granite3-guardian`](https://ollama.com/library/granite3-guardian): Granite Guardian 3.0 in `2b` and `8b` tags, Apache 2.0. Its RAG checks include groundedness: "whether the response is accurate and faithful to the provided context".
+- [Ollama `granite4` tags](https://ollama.com/library/granite4/tags): `granite4:micro` is 2.1 GB, `granite4:tiny-h` is 4.2 GB, `granite4:350m` is 708 MB.
+- [Event page](https://aibuilderschallenge-bob.bemyapp.com/): "Get 40 Bobcoins for 30 days". This conflicts with the 50 Bobcoins on the pricing page (§3).
+
+**Not verified:**
+- That the 2.1 GB model runs acceptably on a 4 GB GPU (`HYPOTHESIS`; nobody has run it).
+- A search summary said Bob is the core of every submission and that watsonx, Granite and Docling are optional extras. Claude did not find that text on the fetched event page.
+- Claude found no statement that participants receive watsonx access or credits.
+- Whether the fetched event page is the North America edition's page.
+
+**Claude's estimate of the scores** (`HYPOTHESIS`: a judgment, not a measurement), assuming the current plan is finished as written:
+
+| Criterion | Estimate (1–5) | Reason |
+|---|---|---|
+| Technical Execution | 3 | The criterion names "IBM and open source technologies". Today IBM technology is only a candidate in a model comparison and could drop out of the product. |
+| Innovation | 3 | Highlights plus sources already exist (§6). Our distinctive parts, the typed phrase-level diff and `lost_at_hop`, sit in W3, where they are the easiest to cut. |
+| Challenge Fit | 3–4 | The topic fits AI for Good, but "people reading social media" is still too broad (§6). |
+| Implementation & Feasibility | 3 | Selecting text and sometimes pasting a link is friction. A demo on our own feed with our own posts can look staged. |
+
+**Main diagnosis.**
+1. The schedule has slipped by a week and nothing runs yet.
+2. Effort is going into evaluation rigour that no criterion scores directly, and too little into what the criteria name: a working prototype, IBM technology, a memorable demo and a concrete user.
+
+**Proposed additions** (`RECOMMENDED`), ordered by value for effort:
+
+1. **Commit to an IBM stack now** instead of waiting for a comparison:
+   - Granite Guardian as a second groundedness check after the verbatim-quote validator (stage 5, §9);
+   - Docling to read open-access study PDFs;
+   - deployment on IBM Cloud Code Engine.
+2. **Make "lost at which hop" the main demo scene.** The study says "in mice", the article drops it, the post says "prevents". Build it only for the open-access path (DOI → open PDF) and say so.
+3. **"Copy evidence note" button.** It assembles a short sourced note from the already-verified quotes, which the user may paste under the post themselves. It needs no extra LLM call.
+4. **A "works anywhere" moment on a real page.** One candidate is a Wikipedia sentence that cites a study (CC BY-SA, with attribution). We must find a real discrepancy; we never construct one.
+5. **Stage-by-stage progress in the UI** ("reading source… 3 claims… comparing…"), so waiting time shows the pipeline.
+6. **Record the screen during Bob sessions** (Plan, Agent, `/review`). The "how you used IBM Bob" section cannot be re-created later.
+7. **Name one user and one decision:** a person about to share a health post.
+
+Stretch only: a "writer mode" that checks a draft before posting. It reuses the dev harness.
+
+**Proposed cuts** (`RECOMMENDED`):
+- Drop the Wührl et al. check (the licence is unresolved) and the SPICED run.
+- Freeze the held-out set with whatever is written by **Nov 17**, at least 20 posts. This changes D-006 (b) and needs its own decision.
+- Score the baseline blind on 10 posts.
+- Run the user test with 5 people and report it descriptively.
+- Keep what a script can compute: kappa, the false-alarm rate on faithful posts, and the share of quotes verified.
+
+**Brian** (`RECOMMENDED`):
+- Benefit: one more Bob trial, and a member who has not seen the prompts, which suits blind labeling and baseline scoring (§11).
+- Cost: onboarding mid-project.
+- Proposal: give Brian a self-contained area, either the fixture feed plus video, slides and project page, or the whole evaluation. Keep Brian out of the pipeline code.
+
+**Proposed milestones** (`RECOMMENDED`):
+
+| Date | Done when |
+|---|---|
+| Nov 13 | Owners assigned; D-008 and the LLM provider decided; Brian registered; the Bobcoin cost of one scaffold task measured |
+| Nov 16 | CLI turns a post + URL into JSON with verified quotes, on 10 dev posts |
+| Nov 19 | Extension on the fixture feed: select, Check, highlights, hover card showing real pipeline output |
+| Nov 22 | Provenance strip, evidence note, the real-page moment |
+| Nov 24 | Feature freeze; held-out and baseline runs |
+
+**Plan updates.**
+- §1: team row updated; three rows added (build progress, scope re-assessment, Bob trial allowance).
+- §2: D-002 superseded; D-011 added.
+- §14: four open questions added.
+- §3–§13 are unchanged. They still describe the earlier plan until the team decides on this proposal.
+
+**Not updated.** `CLAUDE.md`, `README.md` and `HUMAN_TODO.md` still list three members. `CLAUDE.md` is edited by humans only.
+
+**Questions for Le Tuan.**
+- Is the Bob trial active, and who has registered on the Event Platform?
+- Did the Nov 5 kickoff give any watsonx access or credits?
+- What are Brian's strengths and weekly hours?
+
+### 2026-11-12 — Le Tuan (+ Claude) — Plan for the Nov 15 in-person work session
+
+**Input.** Le Tuan reported that Brian "has finished" onboarding and that all four members will meet in person at Silverman Library on Sunday, Nov 15, and asked for a schedule and a checklist. (Le Tuan first said Lockwood, then corrected it to Silverman the same day.) The 12:00–18:30 time is provisional.
+
+**Created:** [`docs/meetings/2026-11-15_silverman_worksession.md`](docs/meetings/2026-11-15_silverman_worksession.md) (`RECOMMENDED`; the team may change any block).
+
+- **Goal:** a walking skeleton. On the fixture page, select a post, click Check, and see highlights painted from a backend response. A `MOCK` response counts as a pass; real pipeline output is the stretch.
+- **Blocks (12:00–18:30):** roll call; one hour of timeboxed decisions (scope re-assessment, owners, D-008, LLM provider and budget, held-out freeze and Brian's role, guideline §11); a shared Bob kickoff that freezes the data contract; two hours of parallel build in three tracks; integration; a 45-minute held-out writing sprint; wrap-up.
+- **Suggested defaults** for each decision are in the file. They are Claude's suggestions, not decisions.
+- **Blind labeling:** Brian works apart during the writing sprint and does not open any `posts_*.csv` or `findings_*.csv`.
+
+**Library facts** (`VERIFIED` 2026-11-12, pages fetched):
+- [Study-room policy](https://library.buffalo.edu/about/policies/use-security/study-rooms.html): group study rooms "can be reserved up to three (3) days in advance"; one reservation a day, two hours at most per day.
+- [Silverman hours](https://cms.lib.buffalo.edu/use/hours/silverman.html): open 24 hours every day in fall 2026. Nov 15 is not among the exceptions. Thanksgiving week is: Nov 25 9am–5pm, Nov 26 closed, Nov 27 9am–5pm, Nov 28 12pm–5pm, Nov 29 12pm–12am.
+- Not verified: whether four members can book back-to-back slots in the same room.
+
+**Plan updates.** §1 team row only. No other section changed.
