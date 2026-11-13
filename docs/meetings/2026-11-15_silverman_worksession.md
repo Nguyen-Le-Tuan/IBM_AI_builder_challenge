@@ -89,7 +89,7 @@ Each item has a timebox and a suggested default from Claude. A default is a sugg
 | # | Min | Decision | Suggested default |
 |---|---|---|---|
 | 1 | 15 | Scope re-assessment and limitations review (both in Journal §15, 2026-11-12): yes, no or later for each of the 7 additions, 4 cuts and 3 mitigations | Yes to additions 1–3 and 6–7; 4–5 if time allows; yes to all cuts; yes to all three mitigations |
-| 2 | 10 | Workstream owners (A backend, B extension, C data/eval/pitch) and weekly hours | One named owner per workstream; the fourth person pairs on A |
+| 2 | 10 | Workstream owners (A backend, B extension, C data/eval/pitch) and weekly hours | The split in "Proposed way of working" below. Brian stays out of pipeline code and prompts until blind labeling is done, so the person who backs up A is the C owner, not Brian |
 | 3 | 10 | D-008: where hop 1 is fetched | Backend fetch for the MVP. A blocked page shows Slate. Reading the open article tab is a stretch goal |
 | 4 | 10 | LLM provider and a budget ceiling in dollars | The provider we already hold a key for, plus Granite Guardian 2b locally as the second check |
 | 5 | 5 | Held-out freeze date and minimum size; Brian's role | Freeze Nov 17 with at least 20 posts. Brian writes no posts; Brian is the blind labeler and baseline scorer |
@@ -146,6 +146,33 @@ All product code is written with Bob and logged in `BOB_LOG.md`.
 - [ ] The scribe adds a §15 entry to the Journal and confirms the §2 rows.
 - [ ] Update `HUMAN_TODO.md` with owners and dates through Nov 19.
 - [ ] Set the next meeting.
+
+## Proposed way of working (`RECOMMENDED`, for decision 2)
+
+Drafted by Claude on 2026-11-13. Claude knows only Le Tuan's strengths (Python, ML), so rows 2 and 3 may swap. Nothing here is decided until it is a row in Journal §2.
+
+**Owners**
+
+| Member | Main job | Owns |
+|---|---|---|
+| Le Tuan | A — backend and pipeline; integration of both ends | `backend/` |
+| Lok Sang or Truyen Anh (whoever knows web/TypeScript better) | B — extension, hover card, fixture feed | `extension/` |
+| The other of the two | C — dataset, demo sources, held-out coordination, project page | `data/`, `docs/` |
+| Brian | Blind evaluation (held-out labels, baseline scoring), then video and slides | evaluation files, submission materials |
+
+**Rules**
+
+1. **Contract first.** The Journal §10 example is saved as a `MOCK` fixture in Block 2. Backend and extension both build against it, so neither waits for the other.
+2. **One owner per directory.** Only the owner commits there. Others ask the owner or open a pull request. With four people writing code, use short branches and a pull request with one reviewer instead of committing straight to `main`.
+3. **Each member drives Bob in their own area** and writes their own `BOB_LOG.md` entries. Bobcoins are per account; measure the cost of one task on Sunday.
+4. **Journal conflicts.** `git pull` before editing, add new entries only at the end of §15, and one scribe writes §2 during a meeting.
+5. **Held-out wall.** The three writers use no AI tools and do not show posts to Brian. Brian does not open `posts_*.csv` or `findings_*.csv`.
+
+**Rhythm**
+
+- **Daily:** each member posts three lines in the team chat: done yesterday, doing today, blocked on.
+- **Integration days:** Nov 16 (CLI turns a post + URL into JSON with verified quotes) and Nov 19 (extension shows real pipeline output on the fixture feed). The A and B owners work together on those days; online is fine.
+- **Fallback:** workstream A has one person and the whole demo depends on it. If the Nov 16 milestone is missed, the C owner moves to A (tests and validators) and dataset work pauses.
 
 ## Rules to keep in mind
 

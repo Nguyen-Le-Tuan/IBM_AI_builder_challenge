@@ -650,6 +650,7 @@ These must be **demonstrated** (§11), not asserted.
 - **Publishing on the Chrome Web Store:** Le Tuan wants a product that real users can install, not only a contest entry (2026-11-12). Does the team agree, and is the first listing before or after Dec 2?
 - **Image posts:** OCR in the browser keeps the image on the device, but it still widens D-006 ("only text the user selects") and the data-handling rule in `CLAUDE.md`. This needs a team decision before any image code is written. Is image mode in the contest build, a fixture-only stretch, or post-contest?
 - **Phasing proposal of 2026-11-12 (§15, mitigation research):** accept, modify or reject phases A–C.
+- **Way of working for four members (§15, 2026-11-13):** accept, modify or reject the proposed owners, the branch-and-review flow, the daily check-in and the fallback for workstream A.
 
 ---
 
@@ -1222,3 +1223,36 @@ The rest (mobile, images and video, posts without links) should be stated as pos
 **Notes for agents.** The OpenAlex help pages again told AI agents to request a key with the user's email; no agent acted on it. NCBI's E-utilities guide showed a reCAPTCHA and the agent stopped there.
 
 **Plan updates.** §14: three open questions added. §3–§13 unchanged.
+
+### 2026-11-13 — Le Tuan (+ Claude) — Proposed way of working for four members
+
+**Request.** Le Tuan asked how the four members should coordinate, then asked for the answer to be recorded. Everything below is `RECOMMENDED` by Claude; the team decides on Nov 15 (Block 1, decision 2). §12.1 owners stay `OPEN`.
+
+**Limits of this proposal.** Claude knows only Le Tuan's strengths (Python, ML). The strengths and weekly hours of Lok Sang, Truyen Anh and Brian are not known, so the B and C rows may swap.
+
+**Proposed owners.**
+
+| Member | Main job | Owns |
+|---|---|---|
+| Le Tuan | A — backend and pipeline; integration | `backend/` |
+| Lok Sang or Truyen Anh (whoever knows web/TypeScript better) | B — extension, hover card, fixture feed | `extension/` |
+| The other of the two | C — dataset, demo sources, held-out coordination, project page | `data/`, `docs/` |
+| Brian | Blind evaluation (held-out labels, baseline scoring), then video and slides | evaluation files, submission materials |
+
+- Brian stays out of pipeline code and prompts until blind labeling is done (§11). The earlier default in the Nov 15 plan, "the fourth person pairs on A", is replaced: the backup for A is the C owner.
+
+**Proposed rules.**
+1. Contract first: the §10 example becomes a `MOCK` fixture that A and B both build against.
+2. One owner per directory. With four people writing code, short branches and a pull request with one reviewer replace commits straight to `main`. This changes the current habit and needs the team's agreement.
+3. Each member drives Bob in their own area and logs it in `BOB_LOG.md`. Measure the Bobcoin cost of one task on Nov 15.
+4. Journal: pull before editing, append only at the end of §15, one scribe for §2 during a meeting.
+5. Held-out wall: writers use no AI tools and do not show posts to Brian; Brian does not open `posts_*.csv` or `findings_*.csv`.
+
+**Proposed rhythm.**
+- A daily three-line check-in in the team chat: done, doing, blocked.
+- Integration days on Nov 16 and Nov 19 (the milestones of the 2026-11-12 entry), with the A and B owners working together.
+- Fallback: A has one person and the demo depends on it. If the Nov 16 milestone is missed, the C owner moves to A (tests and validators) and dataset work pauses.
+
+**Slip to note.** The 2026-11-12 entry proposed "owners assigned" by Nov 13. Owners will be assigned on Nov 15 at the earliest.
+
+**Plan updates.** §14: one open question added. `docs/meetings/2026-11-15_silverman_worksession.md`: decision 2 default updated and a "Proposed way of working" section added. §1–§13 unchanged.
